@@ -1,0 +1,234 @@
+{
+	"LJL": {
+		"7th heaven": {
+			"code" : "7h"
+		},
+		"DeatnatioN FM" : {
+			"code" : "DFM"
+		},
+		"Rampage" : {
+			"code" : "RPG"
+		},
+		"Rascal Jester" : {
+			"code" : "RJ"
+		},
+		"SCARZ": {
+			"code" : "SCARZ"
+		},
+		"USG": {
+			"code" : "USG"
+		}
+	},
+	"LCL": {
+		"Gambit.CIS": {
+			"code" : "Gambit.CIS"
+		},
+		"M19 Team": {
+			"code" : "M19 Team"
+		},
+		"Natus Vincere.CIS": {
+			"code" : "Natus Vincere.CIS"
+		},
+		"RoX": {
+			"code" : "RoX"
+		},
+		"Team Just Alpha": {
+			"code" : "Team Just Alpha"
+		},
+		"Vaevictis eSports": {
+			"code" : "Vaevictis eSports"
+		},
+		"Vega Squadron": {
+			"code" : "Vega Squadron"
+		},
+		"Virtus.pro": {
+			"code" : "Virtus.pro"
+		}
+	},
+	"NA LCS": {
+		"Cloud9": {
+			"code" : "Cloud9"
+		},
+		"Counter Logic Gaming": {
+			"code" : "Counter Logic Gaming"
+		},
+		"Echo Fox": {
+			"code" : "Echo Fox"
+		},
+		"FlyQuest": {
+			"code" : "FlyQuest"
+		},
+		"Immortals": {
+			"code" : "Immortals"
+		},
+		"Phoenix1": {
+			"code" : "Phoenix1"
+		},
+		"Team Dignitas": {
+			"code" : "Team Dignitas"
+		},
+		"Team EnVyUs": {
+			"code" : "Team EnVyUs"
+		},
+		"Team Liquid": {
+			"code" : "Team Liquid"
+		},
+		"Team SoloMid": {
+			"code" : "Team SoloMid"
+		}
+	},
+	"EU LCS": {
+		"Fnatic": {
+			"code" : "Fnatic"
+		},
+		"G2 Esports": {
+			"code" : "G2 Esports"
+		},
+		"Giants Gaming": {
+			"code" : "Giants Gaming"
+		},
+		"H2k-Gaming": {
+			"code" : "H2k-Gaming"
+		},
+		"Misfits": {
+			"code" : "Misfits"
+		},
+		"Origen": {
+			"code" : "Origen"
+		},
+		"Splyce": {
+			"code" : "Splyce"
+		},
+		"Team ROCCAT": {
+			"code" : "Team ROCCAT"
+		},
+		"Team Vitality": {
+			"code" : "VIT"
+		},
+		"Unicorns Of Love": {
+			"code" : "UOL"
+		}
+	},
+	"LCK": {
+		"Afreeca Freecs": {
+			"code" : "Afreeca Freecs"
+		},
+		"bbq Olivers": {
+			"code" : "bbq Olivers"
+		},
+		"Jin Air Green Wings": {
+			"code" : "Jin Air Green Wings"
+		},
+		"Kongdoo Monster": {
+			"code" : "Kongdoo Monster"
+		},
+		"KT Rolster": {
+			"code" : "KT Rolster"
+		},
+		"Longzhu Gaming": {
+			"code" : "Longzhu Gaming"
+		},
+		"MVP": {
+			"code" : "MVP"
+		},
+		"ROX Tigers": {
+			"code" : "ROX Tigers"
+		},
+		"Samsung Galaxy": {
+			"code" : "Samsung Galaxy"
+		},
+		"SK Telecom T1": {
+			"code" : "SK Telecom T1"
+		}
+	},
+	"LPL": {
+		"EDward Gaming": {
+			"code" : "EDward Gaming"
+		},
+		"Game Talents": {
+			"code" : "Game Talents"
+		},
+		"I May": {
+			"code" : "I May"
+		},
+		"Invictus Gaming": {
+			"code" : "Invictus Gaming"
+		},
+		"LGD Gaming": {
+			"code" : "LGD Gaming"
+		},
+		"Newbee": {
+			"code" : "Newbee"
+		},
+		"Oh My God": {
+			"code" : "Oh My God"
+		},
+		"QG Reapers": {
+			"code" : "QG Reapers"
+		},
+		"Royal Never Give Up": {
+			"code" : "Royal Never Give Up"
+		},
+		"Snake Esports": {
+			"code" : "Snake Esports"
+		},
+		"Team WE": {
+			"code" : "Team WE"
+		},
+		"Vici Gaming": {
+			"code" : "Vici Gaming"
+		}
+	},
+	"LMS": {
+		"ahq e-Sports Club": {
+			"code" : "ahq e-Sports Club"
+		},
+		"eXtreme Gamers": {
+			"code" : "eXtreme Gamers"
+		},
+		"Fireball": {
+			"code" : "Fireball"
+		},
+		"Flash Wolves": {
+			"code" : "Flash Wolves"
+		},
+		"Hong Kong Esports": {
+			"code" : "Hong Kong Esports"
+		},
+		"J Team": {
+			"code" : "J Team"
+		},
+		"Machi E-Sports": {
+			"code" : "Machi E-Sports"
+		},
+		"Wayi Spider": {
+			"code" : "Wayi Spider"
+		}
+	},
+	"OPL": {
+		"Abyss Esports": {
+			"code" : "Abyss"
+		},
+		"Avant Garde": {
+			"code" : "Av"
+		},
+		"Chiefs": {
+			"code" : "Chiefs"
+		},
+		"Dire Wolves": {
+			"code" : "DW"
+		},
+		"Team Exile5": {
+			"code" : "x5"
+		},
+		"Legacy eSports": {
+			"code" : "LGC"
+		},
+		"Sin Gaming": {
+			"code" : "Sin"
+		},
+		"Tainted Minds": {
+			"code" : "tM"
+		}
+	}
+}
