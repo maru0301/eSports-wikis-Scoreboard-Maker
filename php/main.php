@@ -38,6 +38,20 @@ class RiotApi
 		
 		return $json;
 	}
+	
+	public function GetSummonerSpells()
+	{
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/jp/v1.2/summoner-spell?spellData=image&api_key=');
+		
+		return $json;
+	}
+	
+	public function GetItemImage()
+	{
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/jp/v1.2/item?itemListData=image&api_key=');
+		
+		return $json;
+	}
 }
 
 //-------------------------------------------------
@@ -47,6 +61,8 @@ $api = new RiotApi;
 $func_tbl = array(
 			"GetVersion" => "GetVersion",
 			"GetChampionImage" => "GetChampionImage",
+			"GetSummonerSpells" => "GetSummonerSpells",
+			"GetItemImage" => "GetItemImage",
 );
 
 //-------------------------------------------------

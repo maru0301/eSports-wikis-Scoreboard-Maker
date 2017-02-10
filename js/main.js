@@ -4,7 +4,8 @@
 ///////////////////////////////////////
 var JSON_DATA_CHAMP_IMG = {};
 var JSON_DATA_TEAM = {};
-var JSON_DATA_PLAYER = {};
+var JSON_DATA_SUMMONER_SPELL = {};
+var JSON_DATA_ITEM_IMG = {};
 
 var VER_CHAMPION = "";
 
@@ -12,10 +13,11 @@ var CDN_URL = "";
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Error Message
-var ERROR_ID_CHAMPION_GET_ERROR 	= "チャンピオン情報が取得出来ませんでした";
 var ERROR_ID_VERSION_GET_ERROR 		= "バージョン情報が取得出来ませんでした";
+var ERROR_ID_CHAMPION_IMG_GET_ERROR 	= "チャンピオンイメージ情報が取得出来ませんでした";
+var ERROR_ID_SUMMONER_SPELL_GET_ERROR 	= "チーム情報が取得出来ませんでした";
+var ERROR_ID_ITEM_IMG_GET_ERROR 	= "アイテムイメージ情報が取得出来ませんでした";
 var ERROR_ID_TEAM_GET_ERROR 		= "チーム情報が取得出来ませんでした";
-var ERROR_ID_PLAYER_GET_ERROR 		= "プレイヤー情報が取得出来ませんでした";
 
 /////////////////////////////////////////////////
 //
@@ -29,9 +31,10 @@ function errorDlg(msg)
 //
 var request = [
 	{ error_id: ERROR_ID_VERSION_GET_ERROR,		url: './php/main.php', data: { func:"GetVersion" },  }, // Version
-	{ error_id: ERROR_ID_CHAMPION_GET_ERROR,	url: './php/main.php', data: { func:"GetChampionImage" },  },
+	{ error_id: ERROR_ID_CHAMPION_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetChampionImage" },  },
+	{ error_id: ERROR_ID_SUMMONER_SPELL_GET_ERROR,	url: './php/main.php', data: { func:"GetSummonerSpells" },  },
+	{ error_id: ERROR_ID_ITEM_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetItemImage" },  },
 	{ error_id: ERROR_ID_TEAM_GET_ERROR,		url: './json/team.json', data: {},  },
-	{ error_id: ERROR_ID_PLAYER_GET_ERROR,		url: './json/player.json', data: {},  },
 ];
 
 var jqXHRList = [];
@@ -67,8 +70,9 @@ $.when.apply(null, jqXHRList).done(function ()
 	var verJson = json[0];
 	var champImgJson = json[1]
 	
-	JSON_DATA_TEAM = json[2];
-	JSON_DATA_PLAYER = json[3];
+	JSON_DATA_SUMMONER_SPELL = json[2];
+	JSON_DATA_ITEM_IMG = json[3];
+	JSON_DATA_TEAM = json[4];
 	
 	JSON_DATA_CHAMP_IMG = new Array();
 	
@@ -103,6 +107,7 @@ $.when.apply(null, jqXHRList).fail(function ()
 });
 
 ////////////////////////////////////////////////////////////////////////////////////
+
 function InitBanPick()
 {
 	// Region
@@ -110,12 +115,19 @@ function InitBanPick()
 	
 	// Blue
 	SetTeamForm($('#region_form').val(), "blue_team");
-	
+	console.log(JSON_DATA_SUMMONER_SPELL);
 	for( var i = 1 ; i <= 1 ; ++i )
 	{
-		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_" + i, "blue_champion_from_" + i);
-		ShowChampionIcon($('#blue_champion_from_'+i).val(), "blue_" + i);
-		SetPlayerForm(JSON_DATA_CHAMP_IMG, "blue_" + i, "blue_player_from_" + i);
+		// Ban
+		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_ban_" + i, "blue_ban_" + i + "_champion_from");
+		ShowChampionIcon($('select#blue_ban_' + i + '_champion_from').val(), "blue_ban_" + i);
+		// Player
+		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_" + i, "blue_" + i + "_champion_from");
+		ShowChampionIcon($('select#blue_' + i + '_champion_from').val(), "blue_" + i);
+		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#blue_team_form').val(),  "blue_" + i, "blue_" + i + "_player_from");
+		// Spell
+		SetSummonerSpellForm(JSON_DATA_SUMMONER_SPELL, "blue_" + i, "blue_" + i + "_summoner_spell_1");
+		ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('#blue_'+ i + '_summoner_spell_1').val(), "blue_" + i, "blue_" + i + "_summoner_spell_1");
 	}
 	
 	// Red
@@ -143,19 +155,40 @@ function InitBanPick()
 		{
 			SetTeamForm($('#region_form').val(), "blue_team");
 			SetTeamForm($('#region_form').val(), "red_team");
+
+			
+			for( var i = 1 ; i <= 1 ; i++ )
+			{
+			}
 		});
 		
 		/////////////////////////////
 		// Blue
 		/////////////////////////////
-		for( var j = 1 ; j <= 1 ; j++ )
+		
+		$("select#blue_team_form").change(function()
 		{
-			console.log("j : " + j);
-			
-			$("select#blue_champion_from_" + j).change(function()
+			for( var i = 1 ; i <= 1 ; i++ )
 			{
-				var index = j - 1;
-				ShowChampionIcon($('#blue_champion_from_'+index).val(), "blue_"+index);
+				console.log("i : " + i);
+				SetPlayerForm($('#region_form').val(), $('#blue_team_form').val(),  "blue_" + i, "blue_" + i + "_player_from");
+			}
+		});
+		
+		for( var i = 1 ; i <= 1 ; ++i )
+		{
+			console.log("i : " + i);
+			
+			$("select#blue_ban_" + i + "_champion_from").change(function()
+			{
+				var index = i - 1;
+				ShowChampionIcon($('select#blue_ban_'+ index + '_champion_from').val(), "blue_ban_"+ index);
+			});
+			
+			$("select#blue_" + i + "_champion_from").change(function()
+			{
+				var index = i - 1;
+				ShowChampionIcon($('select#blue_'+ index + '_champion_from').val(), "blue_"+ index);
 			});
 		}
 		
@@ -253,6 +286,8 @@ function InitBanPick()
 	});
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+
 function SetRegionForm()
 {
 	var target = document.getElementById("region");
@@ -306,7 +341,17 @@ function SetChampionForm(data, getName, createName)
 	var target = document.getElementById(getName);
 	var newTag;
 	
-	newTag = document.createElement("span");
+	if( document.getElementById(createName) == null )
+	{
+		newTag = document.createElement(createName);
+		newTag.id = createName;
+		
+		target.appendChild(newTag);
+	}
+	
+	target = document.getElementById(createName);
+	
+	newTag = document.createElement("champion_form");
 	
 	var tag = new Array();
 	
@@ -331,18 +376,32 @@ function SetChampionForm(data, getName, createName)
 	target.appendChild(newTag);
 }
 
-
-function SetPlayerForm(data, getName, createName)
+function SetPlayerForm(data, region, team, getName, createName)
 {
+//	console.log($("#" + getName).children(createName).remove());
+	
 	var target = document.getElementById(getName);
 	var newTag;
 	
-	newTag = document.createElement("span");
+	$("#"+ createName).children().remove();
+	
+	if( document.getElementById(createName) == null )
+	{
+		newTag = document.createElement(createName);
+		newTag.id = createName;
+		
+		target.appendChild(newTag);
+	}
+	
+	target = document.getElementById(createName);
+	
+	newTag = document.createElement("player_form");
 	
 	var tag = new Array();
 	
-	tag.push("<select id='" + createName + "'>");
+	tag.push(" <select id='" + createName + "'>");
 	
+	/*
 	for( var i = 0 ; i < data.length ; ++i )
 	{
 		if( i == 0 )
@@ -354,27 +413,20 @@ function SetPlayerForm(data, getName, createName)
 			tag.push("<option value='" + i + "'>" + data[i].key + "</option>");
 		}
 	}
+	*/
+	
+	for( var key in JSON_DATA_TEAM[region] )
+	{
+		if( JSON_DATA_TEAM[region][key].code == team )
+		{
+			for( var j = 0 ; j < data[region][key].player.length ; ++j )
+				tag.push("<option value='" + data[region][key].player[j] + "' >" + data[region][key].player[j] + "</option>");
+		}
+	}
 	
 	tag.push("</select>");
 	
 	newTag.innerHTML = tag.join("");
-	
-	target.appendChild(newTag);
-}
-
-function ShowChampionIcon(index, getName)
-{
-	var target = document.getElementById(getName);
-	var newTag;
-	
-	$("#" + getName).children(getName + "_img").remove();
-	
-	newTag = document.createElement(getName + "_img");
-	
-	var champ_img = JSON_DATA_CHAMP_IMG[index].image.full;
-	var champ_name = JSON_DATA_CHAMP_IMG[index].name;
-	
-	newTag.innerHTML = "<img src='" + CDN_URL + "/" + VER_CHAMPION + "/img/champion/" + champ_img + "' width='20' height='20' title='" + champ_name +"'class='example3'>";
 	
 	target.appendChild(newTag);
 }
@@ -396,6 +448,114 @@ function SetLaneForm(getName, createName)
 	
 	target.appendChild(newTag);
 }
+
+function SetSummonerSpellForm(data, getName, createName)
+{
+	var target = document.getElementById(getName);
+	var newTag;
+	
+	$("#"+ createName).children().remove();
+	
+	if( document.getElementById(createName) == null )
+	{
+		newTag = document.createElement(createName);
+		newTag.id = createName;
+		
+		target.appendChild(newTag);
+	}
+	
+	target = document.getElementById(createName);
+	
+	newTag = document.createElement("summoner_spell_form");
+	
+	var tag = new Array();
+	
+	tag.push(" <select id='" + createName + "'>");
+	
+	for( var key in data.data )
+	{
+		tag.push("<option value='" + data.data[key].key + "' >" + data.data[key].name + "</option>");
+	}
+	
+	tag.push("</select>");
+	
+	newTag.innerHTML = tag.join("");
+	
+	target.appendChild(newTag);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+function ShowChampionIcon(index, getName)
+{
+	var target = document.getElementById(getName);
+	var newTag;
+	
+	$("#" + getName).children(getName + "_champion_img").children().remove();
+	
+	if( document.getElementById(getName + "_champion_img") == null )
+	{
+		newTag = document.createElement(getName + "_champion_img");
+		newTag.id = getName + "_champion_img";
+		
+		target.appendChild(newTag);
+	}
+	
+	target = document.getElementById(getName + "_champion_img");
+	
+	newTag = document.createElement("champion_img");
+	
+	var champ_img = JSON_DATA_CHAMP_IMG[index].image.full;
+	var champ_name = JSON_DATA_CHAMP_IMG[index].name;
+	
+	newTag.innerHTML = "<img src='" + CDN_URL + "/" + VER_CHAMPION + "/img/champion/" + champ_img + "' width='20' height='20' title='" + champ_name +"'class='example3'>";
+	
+	target.appendChild(newTag);
+}
+
+function ShowSpellIcon(data, key, getName, createName)
+{
+	var target = document.getElementById(getName);
+	var newTag;
+	
+	$("#" + getName).children(getName + "_champion_img").children().remove();
+	
+	if( document.getElementById(getName + "_champion_img") == null )
+	{
+		newTag = document.createElement(getName + "_champion_img");
+		newTag.id = getName + "_champion_img";
+		
+		target.appendChild(newTag);
+	}
+	
+	target = document.getElementById(getName + "_champion_img");
+	
+	newTag = document.createElement("champion_img");
+	
+	for( var i in data )
+	{
+		if( data[i].key == key )
+		{
+			var champ_img = data[i].image.full;
+			var champ_name = data[i].name;
+		}
+	}
+	
+//	newTag.innerHTML = "<img src='" + CDN_URL + "/" + VER_CHAMPION + "/img/champion/" + champ_img + "' width='20' height='20' title='" + champ_name +"'class='example3'>";
+	
+	target.appendChild(newTag);
+	
+	
+	/*
+	newTag.innerHTML = "<br />" + gameModeMess +
+			   "<br />" + "<img src='" + CDN_URL + "/" + VER_CHAMPION + "/img/champion/" + champ_img + "' width='48' height='48' title='" + champ_name +"'>" +
+			   "<img src='" + CDN_URL + "/" + VER_SN_SPELLS + "/img/spell/" + spell1_img + "' width='24' height='24' title='" + spell1_name +"'>" +
+			   "<img src='" + CDN_URL + "/" + VER_SN_SPELLS + "/img/spell/" + spell2_img + "' width='24' height='24' title='" + spell2_name +"'>" +
+			   " " + (game_data[i].win ? "Win" : "Lose");
+	*/
+}
+
+////////////////////////////////////////////////////////////////////////////////////
 
 function GetWikisCode()
 {

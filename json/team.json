@@ -1,22 +1,81 @@
 {
 	"LJL": {
 		"7th heaven": {
-			"code" : "7h"
+			"code" : "7h",
+			"player" : [
+					"SatoRy",
+					"Savage",
+					"Shinmori",
+					"Rokenia",
+					"ThintoN",
+					"Solid",
+					"Broooock",
+					"Estelim",
+					"WildSpeed",
+					"NaeMisa"
+			]
 		},
 		"DeatnatioN FM" : {
-			"code" : "DFM"
+			"code" : "DFM",
+			"player" : [
+					"Yutapon",
+					"Paz",
+					"Shrimp",
+					"Ceros",
+					"Zerost",
+					"viviD",
+					"nororin"
+			]
 		},
 		"Rampage" : {
-			"code" : "RPG"
+			"code" : "RPG",
+			"player" : [
+					"Evi",
+					"Tussle",
+					"Ramune",
+					"YutoriMoyashi",
+					"Dara",
+					"Meron",
+					"Lem0n"
+			]
 		},
 		"Rascal Jester" : {
-			"code" : "RJ"
+			"code" : "RJ",
+			"player" : [
+					"Atyamomo",
+					"WyverN",
+					"alleycat",
+					"NoA",
+					"Yuki",
+					"Rkp",
+					"iSeNN"
+			]
 		},
 		"SCARZ": {
-			"code" : "SCARZ"
+			"code" : "SCARZ",
+			"player" : [
+					"Arfoad",
+					"DayDream",
+					"Search",
+					"Day1",
+					"Kazu",
+					"Mei",
+					"Araragi",
+					"Air",
+					"Way",
+					"Terette"
+			]
 		},
 		"USG": {
-			"code" : "USG"
+			"code" : "USG",
+			"player" : [
+					"apaMEN",
+					"Neo",
+					"REMIND",
+					"Haretti",
+					"Enty",
+					"Fate"
+			]
 		}
 	},
 	"LCL": {
