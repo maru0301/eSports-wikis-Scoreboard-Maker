@@ -41,14 +41,14 @@ class RiotApi
 	
 	public function GetSummonerSpells()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/jp/v1.2/summoner-spell?spellData=image&api_key=');
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/summoner-spell?spellData=image&api_key=');
 		
 		return $json;
 	}
 	
 	public function GetItemImage()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/jp/v1.2/item?itemListData=image&api_key=');
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=image&api_key=');
 		
 		return $json;
 	}
