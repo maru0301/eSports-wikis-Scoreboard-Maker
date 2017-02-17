@@ -116,6 +116,9 @@ $.when.apply(null, jqXHRList).fail(function ()
 
 function InitBanPick()
 {
+	// ItemJson先頭に未選択データ追加
+	JSON_DATA_ITEM_IMG.data["0"] = { id : -1, name : "None" };
+	
 	// Region
 	SetRegionForm();
 	
@@ -124,22 +127,28 @@ function InitBanPick()
 	
 	console.log(JSON_DATA_ITEM_IMG);
 	
-	for( var i = 1 ; i <= 1 ; ++i )
+	for( var i = 1 ; i <= 5 ; ++i )
 	{
 		// Ban
 		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_ban_" + i, "blue_ban_" + i + "_champion_from");
 		ShowChampionIcon($('select#blue_ban_' + i + '_champion_from').val(), "blue_ban_" + i);
-		// Player
+		// Champion
 		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_" + i, "blue_" + i + "_champion_from");
 		ShowChampionIcon($('select#blue_' + i + '_champion_from').val(), "blue_" + i);
-		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#blue_team_form').val(),  "blue_" + i, "blue_" + i + "_player_from");
+		// Player
+		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#blue_team_form').val(),  "player_" + i, "blue_" + i + "_player_from");
 		// Spell
-		SetSummonerSpellForm(JSON_DATA_SUMMONER_SPELL, "blue_" + i, "blue_" + i + "_summoner_spell_form_1");
-		ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('select#blue_'+ i + '_summoner_spell_form_1').val(), "blue_" + i, "blue_" + i + "_summoner_spell_1");
-		SetSummonerSpellForm(JSON_DATA_SUMMONER_SPELL, "blue_" + i, "blue_" + i + "_summoner_spell_form_2");
-		ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('select#blue_'+ i + '_summoner_spell_form_2').val(), "blue_" + i, "blue_" + i + "_summoner_spell_2");
+		for( var j = 1 ; j <= 2 ; ++ j )
+		{
+			SetSummonerSpellForm(JSON_DATA_SUMMONER_SPELL, "blue_" + i, "blue_" + i + "_summoner_spell_form_" + j);
+			ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('select#blue_'+ i + '_summoner_spell_form_1').val(), "blue_" + i, "blue_" + i + "_summoner_spell_" + j);
+		}
 		// Item
-//		SetItemForm();
+		for( var j = 1 ; j <= 6 ; ++j )
+		{
+			SetItemForm(JSON_DATA_ITEM_IMG, "blue_" + i, "blue_" + i + "_item_form_"+ j);
+			ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ i + '_item_form_' + j).val(), "blue_" + i, "blue_" + i + "_item_" + j);
+		}
 	}
 	
 	// Red
@@ -180,20 +189,19 @@ function InitBanPick()
 		
 		$("select#blue_team_form").change(function()
 		{
-			for( var i = 1 ; i <= 1 ; i++ )
+			for( var i = 1 ; i <= 5 ; i++ )
 			{
-				console.log("i : " + i);
 				SetPlayerForm($('#region_form').val(), $('#blue_team_form').val(),  "blue_" + i, "blue_" + i + "_player_from");
 			}
 		});
 		
-		for( var i = 1 ; i <= 1 ; ++i )
+		for( var i = 1 ; i <= 5 ; ++i )
 		{
-			console.log("i : " + i);
-			
+			console.log("i ; " + i);
 			$("select#blue_ban_" + i + "_champion_from").change(function()
 			{
 				var index = i - 1;
+			console.log("index ; " + index);
 				ShowChampionIcon($('select#blue_ban_'+ index + '_champion_from').val(), "blue_ban_"+ index);
 			});
 			
@@ -213,6 +221,42 @@ function InitBanPick()
 			{
 				var index = i - 1;
 				ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('select#blue_'+ index + '_summoner_spell_form_2').val(), "blue_" + index, "blue_" + index + "_summoner_spell_2");
+			});
+			
+			$("select#blue_" + i + "_item_form_1").change(function()
+			{
+				var index = i - 1;
+				ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ index + '_item_form_1').val(), "blue_" + index, "blue_" + index + "_item_1");
+			});
+			
+			$("select#blue_" + i + "_item_form_2").change(function()
+			{
+				var index = i - 1;
+				ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ index + '_item_form_2').val(), "blue_" + index, "blue_" + index + "_item_2");
+			});
+			
+			$("select#blue_" + i + "_item_form_3").change(function()
+			{
+				var index = i - 1;
+				ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ index + '_item_form_3').val(), "blue_" + index, "blue_" + index + "_item_3");
+			});
+			
+			$("select#blue_" + i + "_item_form_4").change(function()
+			{
+				var index = i - 1;
+				ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ index + '_item_form_4').val(), "blue_" + index, "blue_" + index + "_item_4");
+			});
+			
+			$("select#blue_" + i + "_item_form_5").change(function()
+			{
+				var index = i - 1;
+				ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ index + '_item_form_5').val(), "blue_" + index, "blue_" + index + "_item_5");
+			});
+			
+			$("select#blue_" + i + "_item_form_6").change(function()
+			{
+				var index = i - 1;
+				ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ index + '_item_form_6').val(), "blue_" + index, "blue_" + index + "_item_6");
 			});
 		}
 		
@@ -482,7 +526,6 @@ function SetSummonerSpellForm(data, getName, createName)
 
 function SetItemForm(data, getName, createName)
 {
-	
 	var target = document.getElementById(getName);
 	var newTag;
 	
@@ -490,11 +533,11 @@ function SetItemForm(data, getName, createName)
 	
 	var tag = new Array();
 	
-	tag.push(" <select id='" + createName + "'>");
+	tag.push("<br /><select id='" + createName + "'>");
 	
 	for( var key in data.data )
 	{
-//		tag.push("<option value='" + data.data[key].key + "' >" + data.data[key].name + "</option>");
+		tag.push("<option value='" + data.data[key].id + "' >" + data.data[key].name + "</option>");
 	}
 	
 	tag.push("</select>");
@@ -560,6 +603,47 @@ function ShowSpellIcon(data, key, getName, createName)
 			var spell1_name = data[i].name;
 			
 			newTag.innerHTML = "<img src='" + CDN_URL + "/" + VER_SN_SPELLS + "/img/spell/" + spell1_img + "' width='20' height='20' title='" + spell1_name +"' class='example3'>";
+		}
+	}
+	
+	target.appendChild(newTag);
+}
+
+function ShowItemIcon(data, key, getName, createName)
+{
+	var target = document.getElementById(getName);
+	var newTag;
+	
+	$("#" + getName).children(createName + "_img").children().remove();
+	
+	if( document.getElementById(createName + "_img") == null )
+	{
+		newTag = document.createElement(createName + "_img");
+		newTag.id = createName + "_img";
+		
+		target.appendChild(newTag);
+	}
+	
+	target = document.getElementById(createName + "_img");
+	
+	newTag = document.createElement("summoner_spell_img");
+	
+	for( var i in data )
+	{
+		if( data[i].id == key )
+		{
+			if( key != -1 )
+			{
+				var item_img = data[i].image.full;
+				var item_name = data[i].name;
+				
+				newTag.innerHTML = "<img src='" + CDN_URL + "/" + VER_ITEM + "/img/item/" + item_img + "' width='20' height='20' title='" + item_name +"' class='example3'>";
+			}
+			else
+			{
+				// idが-1はNone
+				// newTag.innerHTML = "<img src='" + CDN_URL + "/" + VER_ITEM + "/img/item/" + item_img + "' width='20' height='20' title='" + item_name +"' class='example3'>";
+			}
 		}
 	}
 	
