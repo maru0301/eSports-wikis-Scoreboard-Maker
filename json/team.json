@@ -80,28 +80,84 @@
 	},
 	"LCL": {
 		"Gambit.CIS": {
-			"code" : "Gambit.CIS"
+			"code" : "Gambit.CIS",
+			"player" : [
+					"FIRess",
+					"Diamondprox",
+					"zoiren",
+					"NikStar",
+					"Xavieles"
+			]
 		},
 		"M19 Team": {
-			"code" : "M19 Team"
+			"code" : "M19 Team",
+			"player" : [
+					"Smurf",
+					"PvPStejos",
+					"Kira",
+					"VincentVega",
+					"Likkrit"
+			]
 		},
 		"Natus Vincere.CIS": {
-			"code" : "Natus Vincere.CIS"
+			"code" : "Natus Vincere.CIS",
+			"player" : [
+					"Zvene",
+					"Gumbeq",
+					"niQ",
+					"aMiracle",
+					"skash"
+			]
 		},
 		"RoX": {
-			"code" : "RoX"
+			"code" : "RoX",
+			"player" : [
+					"Charger",
+					"Punisher",
+					"Ekka",
+					"Ritix",
+					"Raxxo"
+			]
 		},
 		"Team Just Alpha": {
-			"code" : "Team Just Alpha"
+			"code" : "Team Just Alpha",
+			"player" : [
+					"BOSS",
+					"SaDJesteRRR",
+					"Marker",
+					"pooh",
+					"Max"
+			]
 		},
 		"Vaevictis eSports": {
-			"code" : "Vaevictis eSports"
+			"code" : "Vaevictis eSports",
+			"player" : [
+					"Dark Solece",
+					"DoubleAiM",
+					"Lukezy",
+					"unho1y",
+					"Dimonko"
+			]
 		},
 		"Vega Squadron": {
-			"code" : "Vega Squadron"
+			"code" : "Vega Squadron",
+			"player" : [
+					"NoNholy",
+					"Zanzarah",
+					"Drabovik123",
+					"LeX",
+					"Edward"
+			]
 		},
 		"Virtus.pro": {
-			"code" : "Virtus.pro"
+			"code" : "Virtus.pro",
+			"player" : [
+					"Doxy",
+					"Kreox",
+					"Paranoia",
+					"Blasting",
+					"SaNTaS"
+			]
 		}
 	},
 	"NA LCS": {

@@ -46,9 +46,16 @@ class RiotApi
 		return $json;
 	}
 	
-	public function GetItemImage()
+	public function GetItemTagImage()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=image&api_key=');
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=image,tags&api_key=');
+		
+		return $json;
+	}
+	
+	public function GetMasteryImage()
+	{
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/mastery?masteryListData=image&api_key=');
 		
 		return $json;
 	}
@@ -62,7 +69,8 @@ $func_tbl = array(
 			"GetVersion" => "GetVersion",
 			"GetChampionImage" => "GetChampionImage",
 			"GetSummonerSpells" => "GetSummonerSpells",
-			"GetItemImage" => "GetItemImage",
+			"GetItemTagImage" => "GetItemTagImage",
+			"GetMasteryImage" => "GetMasteryImage",
 );
 
 //-------------------------------------------------
