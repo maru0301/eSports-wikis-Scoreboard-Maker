@@ -2,11 +2,11 @@
 // Global
 
 ///////////////////////////////////////
-var JSON_DATA_CHAMP_IMG = {};
+var JSON_DATA_CHAMP_IMG = new Array();
 var JSON_DATA_TEAM = {};
-var JSON_DATA_SUMMONER_SPELL = {};
-var JSON_DATA_ITEM_IMG = {};
-var JSON_DATA_MASTERY_IMG = {};
+var JSON_DATA_SUMMONER_SPELL = new Array();
+var JSON_DATA_ITEM_IMG = new Array();
+var JSON_DATA_MASTERY_IMG = new Array();
 
 var VER_CHAMPION = "";
 var VER_SN_SPELLS = "";
@@ -74,15 +74,14 @@ $.when.apply(null, jqXHRList).done(function ()
 	// Global情報取得
 	///////////////////////////////////////////////////////////
 	var verJson = json[0];
-	var champImgJson = json[1]
+	var champImgJson = json[1];
+	var spellJson = json[2];
+	var itemImgJson = json[3];
+	var masteryImgJson = json[5];
 	
-	JSON_DATA_SUMMONER_SPELL = json[2];
-	JSON_DATA_ITEM_IMG = json[3];
 	JSON_DATA_TEAM = json[4];
-	JSON_DATA_MASTERY_IMG = json[5];
 	
-	JSON_DATA_CHAMP_IMG = new Array();
-	
+	// ソート
 	for(var key in champImgJson.data)
 		JSON_DATA_CHAMP_IMG.push(champImgJson.data[key]);
 	
@@ -91,6 +90,42 @@ $.when.apply(null, jqXHRList).done(function ()
 			if(a.key < b.key) return -1;
 			if(a.key > b.key) return 1;
 			if(a.key == b.key) return 0;
+		}
+	);
+	
+	for(var key in itemImgJson.data)
+		JSON_DATA_ITEM_IMG[key] = itemImgJson.data[key];
+	
+	JSON_DATA_ITEM_IMG.sort(function(a, b)
+		{
+			if(a.name < b.name) return -1;
+			if(a.name > b.name) return 1;
+			if(a.name == b.name) return 0;
+		}
+	);
+	
+	for(var key in spellJson.data)
+	{
+		var id = spellJson.data[key].id;
+		JSON_DATA_SUMMONER_SPELL[id] = spellJson.data[key];
+	}
+
+	JSON_DATA_SUMMONER_SPELL.sort(function(a, b)
+		{
+			if(a.name < b.name) return -1;
+			if(a.name > b.name) return 1;
+			if(a.name == b.name) return 0;
+		}
+	);
+	
+	for(var key in masteryImgJson.data)
+		JSON_DATA_MASTERY_IMG[key] = masteryImgJson.data[key];
+	
+	JSON_DATA_MASTERY_IMG.sort(function(a, b)
+		{
+			if(a.id < b.id) return -1;
+			if(a.id > b.id) return 1;
+			if(a.id == b.id) return 0;
 		}
 	);
 	
@@ -121,7 +156,7 @@ $.when.apply(null, jqXHRList).fail(function ()
 function InitBanPick()
 {
 	// ItemJson先頭に未選択データ追加
-	JSON_DATA_ITEM_IMG.data["0"] = { id : -1, name : "None" };
+	JSON_DATA_ITEM_IMG.unshift({ id : -1, name : "None", tags : "Dummy"} );
 	
 	// Region
 	SetRegionForm();
@@ -143,20 +178,20 @@ function InitBanPick()
 		for( var j = 1 ; j <= 2 ; ++ j )
 		{
 			SetSummonerSpellForm(JSON_DATA_SUMMONER_SPELL, "blue_" + i, "blue_" + i + "_summoner_spell_form_" + j, j);
-			ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('select#blue_'+ i + '_summoner_spell_form_1').val(), "blue_" + i, "blue_" + i + "_summoner_spell_" + j);
+			ShowSpellIcon(JSON_DATA_SUMMONER_SPELL,  $('select#blue_'+ i + '_summoner_spell_form_1').val(), "blue_" + i, "blue_" + i + "_summoner_spell_" + j);
 		}
 		// Mastery
 		SetMasteryForm(JSON_DATA_MASTERY_IMG, "blue_" + i, "blue_" + i + "_mastery_form");
-		ShowMasteryIcon(JSON_DATA_MASTERY_IMG.data, $('select#blue_'+ i + '_mastery_form').val(), "blue_" + i, "blue_" + i + "_mastery");
+		ShowMasteryIcon(JSON_DATA_MASTERY_IMG, $('select#blue_'+ i + '_mastery_form').val(), "blue_" + i, "blue_" + i + "_mastery");
 		// Item
 		for( var j = 1 ; j <= 6 ; ++j )
 		{
 			SetItemForm(JSON_DATA_ITEM_IMG, "blue_" + i, "blue_" + i + "_item_form_"+ j, j);
-			ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ i + '_item_form_' + j).val(), "blue_" + i, "blue_" + i + "_item_" + j);
+			ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#blue_'+ i + '_item_form_' + j).val(), "blue_" + i, "blue_" + i + "_item_" + j);
 		}
 		// Trinket
 		SetTrinketForm(JSON_DATA_ITEM_IMG, "blue_" + i, "blue_" + i + "_trinket_form");
-		ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ i + '_trinket_form').val(), "blue_" + i, "blue_" + i + "_trinket");
+		ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#blue_'+ i + '_trinket_form').val(), "blue_" + i, "blue_" + i + "_trinket");
 	}
 	
 	// Red
@@ -176,20 +211,20 @@ function InitBanPick()
 		for( var j = 1 ; j <= 2 ; ++ j )
 		{
 			SetSummonerSpellForm(JSON_DATA_SUMMONER_SPELL, "red_" + i, "red_" + i + "_summoner_spell_form_" + j, j);
-			ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $('select#red_'+ i + '_summoner_spell_form_1').val(), "red_" + i, "red_" + i + "_summoner_spell_" + j);
+			ShowSpellIcon(JSON_DATA_SUMMONER_SPELL,  $('select#red_'+ i + '_summoner_spell_form_1').val(), "red_" + i, "red_" + i + "_summoner_spell_" + j);
 		}
 		// Mastery
 		SetMasteryForm(JSON_DATA_MASTERY_IMG, "red_" + i, "red_" + i + "_mastery_form");
-		ShowMasteryIcon(JSON_DATA_MASTERY_IMG.data, $('select#red_'+ i + '_mastery_form').val(), "red_" + i, "red_" + i + "_mastery");
+		ShowMasteryIcon(JSON_DATA_MASTERY_IMG, $('select#red_'+ i + '_mastery_form').val(), "red_" + i, "red_" + i + "_mastery");
 		// Item
 		for( var j = 1 ; j <= 6 ; ++j )
 		{
 			SetItemForm(JSON_DATA_ITEM_IMG, "red_" + i, "red_" + i + "_item_form_"+ j, j);
-			ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#blue_'+ i + '_item_form_' + j).val(), "red_" + i, "red_" + i + "_item_" + j);
+			ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#blue_'+ i + '_item_form_' + j).val(), "red_" + i, "red_" + i + "_item_" + j);
 		}
 		// Trinket
 		SetTrinketForm(JSON_DATA_ITEM_IMG, "red_" + i, "red_" + i + "_trinket_form");
-		ShowItemIcon(JSON_DATA_ITEM_IMG.data, $('select#red_'+ i + '_trinket_form').val(), "red_" + i, "red_" + i + "_trinket");
+		ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#red_'+ i + '_trinket_form').val(), "red_" + i, "red_" + i + "_trinket");
 	}
 }
 
@@ -334,9 +369,9 @@ function SetSummonerSpellForm(data, getName, createName, index)
 	
 	tag.push(" <select id='" + createName + "' onChange='ChangeSummonerSpellForm(&quot;" + createName + "&quot;" + ", &quot;" + getName + "&quot;, " + index + ")'>");
 	
-	for( var key in data.data )
+	for( var key in data )
 	{
-		tag.push("<option value='" + data.data[key].key + "' >" + data.data[key].name + "</option>");
+		tag.push("<option value='" + key + "' >" + data[key].name + "</option>");
 	}
 	
 	tag.push("</select>");
@@ -360,9 +395,9 @@ function SetItemForm(data, getName, createName, index)
 	
 	tag.push("<select id='" + createName + "' onChange='ChangeItemForm(&quot;" + createName + "&quot;" + ", &quot;" + getName + "&quot;, " + index + ")'>");
 	
-	for( var key in data.data )
+	for( var key in data )
 	{
-		tag.push("<option value='" + data.data[key].id + "' >" + data.data[key].name + "</option>");
+		tag.push("<option value='" + data[key].id + "' >" + data[key].name + "</option>");
 	}
 	
 	tag.push("</select>");
@@ -383,10 +418,10 @@ function SetTrinketForm(data, getName, createName)
 	
 	tag.push("<br /><select id='" + createName + "' onChange='ChangeTrinketForm(&quot;" + createName + "&quot;" + ", &quot;" + getName + "&quot;)'>");
 	
-	for( var key in data.data )
+	for( var key in data )
 	{
-		if( $.inArray( "Trinket", data.data[key].tags ) >= 0 )
-			tag.push("<option value='" + data.data[key].id + "' >" + data.data[key].name + "</option>");
+		if( $.inArray( "Trinket", data[key].tags ) >= 0 )
+			tag.push("<option value='" + data[key].id + "' >" + data[key].name + "</option>");
 	}
 	
 	tag.push("</select>");
@@ -407,9 +442,9 @@ function SetMasteryForm(data, getName, createName)
 	
 	tag.push(" <select id='" + createName + "' onChange='ChangeMasteryForm(&quot;" + createName + "&quot;" + ", &quot;" + getName + "&quot;)'>");
 	
-	for( var key in data.data )
+	for( var key in data )
 	{
-		tag.push("<option value='" + data.data[key].id + "' >" + data.data[key].name + "</option>");
+		tag.push("<option value='" + data[key].id + "' >" + data[key].name + "</option>");
 	}
 	
 	tag.push("</select>");
@@ -469,7 +504,7 @@ function ShowSpellIcon(data, key, getName, createName)
 	
 	for( var i in data )
 	{
-		if( data[i].key == key )
+		if( i == key )
 		{
 			var spell1_img = data[i].image.full;
 			var spell1_name = data[i].name;
@@ -504,6 +539,8 @@ function ShowItemIcon(data, key, getName, createName)
 	{
 		if( data[i].id == key )
 		{
+			console.log( data[i] );
+			console.log( "i : " + i );
 			if( key != -1 )
 			{
 				var item_img = data[i].image.full;
@@ -581,22 +618,32 @@ function ChangeChampionForm(name)
 
 function ChangeSummonerSpellForm(form_name, parentName, index)
 {
-	ShowSpellIcon(JSON_DATA_SUMMONER_SPELL.data,  $("select#" + form_name).val(), parentName, parentName + "_summoner_spell_" + index);
+	ShowSpellIcon(JSON_DATA_SUMMONER_SPELL,  $("select#" + form_name).val(), parentName, parentName + "_summoner_spell_" + index);
 }
 
 function ChangeItemForm(form_name, parentName, index)
 {
-	ShowItemIcon(JSON_DATA_ITEM_IMG.data, $("select#" + form_name).val(), parentName, parentName + "_item_" + index);
+	ShowItemIcon(JSON_DATA_ITEM_IMG, $("select#" + form_name).val(), parentName, parentName + "_item_" + index);
 }
 
 function ChangeTrinketForm(form_name, parentName)
 {
-	ShowItemIcon(JSON_DATA_ITEM_IMG.data, $("select#" + form_name).val(), parentName, parentName + "_trinket");
+	ShowItemIcon(JSON_DATA_ITEM_IMG, $("select#" + form_name).val(), parentName, parentName + "_trinket");
 }
 
 function ChangeMasteryForm(form_name, parentName)
 {
-	ShowMasteryIcon(JSON_DATA_MASTERY_IMG.data, $("select#" + form_name).val(), parentName, parentName + "_mastery");
+	ShowMasteryIcon(JSON_DATA_MASTERY_IMG, $("select#" + form_name).val(), parentName, parentName + "_mastery");
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+function GetItemName(id)
+{
+	if(id >= -1)
+		return " ";
+	
+	return JSON_DATA_ITEM_IMG.data[id].name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -611,19 +658,22 @@ function GetWikisCode()
 	newTag = document.createElement("span");
 	
 	var blue_team = $('#blue_team_form').val();
+	var blue_total_gold = $('#blue_total_gold').val();
+	var blue_total_kill = $('#blue_total_kill').val();
+	var blue_total_tower = $('#blue_total_tower').val();
+	var blue_total_dragon = $('#blue_total_dragon').val();
+	var blue_total_baron = $('#blue_total_baron').val();
 	var blue_ban = new Array();
 	var blue_pick = new Array();
-	var blue_total_gold = $('#Blue Team Total Gold').val();
-	var blue_total_kill = $('#Blue Team Total Kill').val();
-	var blue_total_tower = $('#Blue Team Total Taken Tower').val();
-	var blue_total_dragon = $('#Blue Team Total Dragon').val();
-	var blue_total_baron = $('#Blue Team Total Baron').val();
 	var blue_player_name = new Array();
 	var blue_player_kill = new Array();
 	var blue_player_death = new Array();
 	var blue_player_assist = new Array();
+	var blue_player_gold = new Array();
+	var blue_player_cs = new Array();
 	var blue_player_spell1 = new Array();
 	var blue_player_spell2 = new Array();
+	var blue_player_mastery = new Array();
 	var blue_player_item1 = new Array();
 	var blue_player_item2 = new Array();
 	var blue_player_item3 = new Array();
@@ -633,19 +683,22 @@ function GetWikisCode()
 	var blue_player_trincket = new Array();
 	
 	var red_team = $('#red_team_form').val();
+	var red_total_gold = $('#red_total_gold').val();
+	var red_total_kill = $('#red_total_kill').val();
+	var red_total_tower = $('#red_total_tower').val();
+	var red_total_dragon = $('#red_total_dragon').val();
+	var red_total_baron = $('#red_total_baron').val();
 	var red_ban = new Array();
 	var red_pick = new Array();
-	var red_total_gold = $('#Red Team Total Gold').val();
-	var red_total_kill = $('#Red Team Total Kill').val();
-	var red_total_tower = $('#Red Team Total Taken Tower').val();
-	var red_total_dragon = $('#Red Team Total Dragon').val();
-	var red_total_baron = $('#Red Team Total Baron').val();
 	var red_player_name = new Array();
 	var red_player_kill = new Array();
 	var red_player_death = new Array();
 	var red_player_assist = new Array();
+	var red_player_gold = new Array();
+	var red_player_cs = new Array();
 	var red_player_spell1 = new Array();
 	var red_player_spell2 = new Array();
+	var red_player_mastery = new Array();
 	var red_player_item1 = new Array();
 	var red_player_item2 = new Array();
 	var red_player_item3 = new Array();
@@ -661,7 +714,22 @@ function GetWikisCode()
 		
 		blue_ban.push(JSON_DATA_CHAMP_IMG[blue_ban_index].key.toLowerCase());
 		blue_pick.push(JSON_DATA_CHAMP_IMG[blue_pick_index].key.toLowerCase());
-		
+		blue_player_name.push($("select#blue_" + i + "_player_from" ).val());
+		blue_player_kill.push($("#blue_player" + i + "_kill").val());
+		blue_player_death.push($("#blue_player" + i + "_death").val());
+		blue_player_assist.push($("#blue_player" + i + "_assist").val());
+		blue_player_gold.push($("#blue_player" + i + "_gold").val());
+		blue_player_cs.push($("#blue_player" + i + "_cs").val());
+		blue_player_spell1.push(JSON_DATA_SUMMONER_SPELL[$("#blue_" + i + "_summoner_spell_form_1").val()].name);
+		blue_player_spell2.push(JSON_DATA_SUMMONER_SPELL[$("#blue_" + i + "_summoner_spell_form_2").val()].name);
+		blue_player_mastery.push($("select#blue_" + i + "_mastery_form").val())
+		blue_player_item1.push(GetItemName($("select#blue_" + i + "_item_form_1").val()));
+		blue_player_item2.push(GetItemName($("select#blue_" + i + "_item_form_2").val()));
+		blue_player_item3.push(GetItemName($("select#blue_" + i + "_item_form_3").val()));
+		blue_player_item4.push(GetItemName($("select#blue_" + i + "_item_form_4").val()));
+		blue_player_item5.push(GetItemName($("select#blue_" + i + "_item_form_5").val()));
+		blue_player_item6.push(GetItemName($("select#blue_" + i + "_item_form_6").val()));
+		blue_player_trincket.push()
 		var red_ban_index = $("select#red_ban_" + i + "_champion_from").val();
 		var red_pick_index = $("select#red_" + i + "_champion_from").val();
 		
@@ -669,6 +737,23 @@ function GetWikisCode()
 		red_pick.push(JSON_DATA_CHAMP_IMG[red_pick_index].key.toLowerCase());
 	}
 	
+	var tag = new Array();
+	
+	tag.push("<br>");
+	tag.push("{{BlockBox|Start}}<br>");
+	tag.push("{{MatchRecapS7/Header|" + blue_team + " |" + red_team + "}}{{MatchRecapS7|gamename= Game 1 |patch= 7.1 |team1= " + blue_team + " |team2= " + red_team + " |team1score= 0 |team2score= 1 |winner= 2 |team1ban1= " + blue_ban[0] + " |team1ban2= " + blue_ban[1] + " |team1ban3= " + blue_ban[2] + " |team1ban4= " + blue_ban[3] + " |team1ban5= " + blue_ban[4] + " |team2ban1= " + red_ban[0] + " |team2ban2= " + red_ban[1] + " |team2ban3= " + red_ban[2] + " |team2ban4= " + red_ban[3] + " |team2ban5= " + red_ban[4] + "<br>");
+	tag.push("|date= 2017-01-20 |dst= yes |KST= 20:00 |gamelength= 38:16 |tournament= LJL 2017 Spring" + "<br>");
+	tag.push("|team1g= " + blue_total_gold + " |team1k= " + blue_total_kill + " |team1d= "+ blue_total_dragon + " |team1b= " + blue_total_baron + " |team1t= " + blue_total_tower + " |team2g= " + red_total_gold + " |team2k= " + red_total_kill + " |team2d= " + red_total_dragon + " |team2b= " + red_total_baron + " |team2t= " + red_total_tower + " |team1rh=  |team2rh=  |team1i=  |team2i= " + "<br>");
+	
+	for( var i = 1, j = 0 ; i <= 5 ; ++i, ++j )
+	{
+		tag.push("|blue" + i + "={{MatchRecapS7/Player|champion= " + blue_pick[j] + " |name= " + blue_player_name[j] + " |kills= " + blue_player_kill[j] + " |deaths= " + red_player_death[j] + " |assists= " + blue_player_assist[j] + " |gold= " + blue_player_gold[j] + " |cs= " + blue_player_cs[j] + " |summonerspell1= " + blue_player_spell1[j] + " |summonerspell2= " + blue_player_spell2[j] + " |item1= " + blue_player_item1[j] + " |item2= " + blue_player_item2[j] + " |item3= " + blue_player_item3[j] + " |item4= " + blue_player_item4[j] + " |item5= " + blue_player_item5[j] + " |item6= " + blue_player_item6[j] + " |trinket= " + blue_player_trincket[j] + " |keystone= " + blue_player_mastery[j] + " }}");
+	}
+	
+	tag.push("<br>");
+	
+	newTag.innerHTML = tag.join("");
+	/*
 	newTag.innerHTML = "<br>" +
 			"{{BlockBox|Start}}" + "<br>" +
 			"{{MatchRecapS7/Header|" + blue_team + " |" + red_team + "}}{{MatchRecapS7|gamename= Game 1 |patch= 7.1 |team1= " + blue_team + " |team2= " + red_team + " |team1score= 0 |team2score= 1 |winner= 2 |team1ban1= " + blue_ban[0] + " |team1ban2= " + blue_ban[1] + " |team1ban3= " + blue_ban[2] + " |team1ban4= " + blue_ban[3] + " |team1ban5= " + blue_ban[4] + " |team2ban1= " + red_ban[0] + " |team2ban2= " + red_ban[1] + " |team2ban3= " + red_ban[2] + " |team2ban4= " + red_ban[3] + " |team2ban5= " + red_ban[4] + "<br>" +
@@ -676,28 +761,9 @@ function GetWikisCode()
 			"|team1g= " + blue_total_gold + " |team1k= " + blue_total_kill + " |team1d= "+ blue_total_dragon + " |team1b= " + blue_total_baron + " |team1t= " + blue_total_tower + " |team2g= " + red_total_gold + " |team2k= " + red_total_kill + " |team2d= " + red_total_dragon + " |team2b= " + red_total_baron + " |team2t= " + red_total_tower + " |team1rh=  |team2rh=  |team1i=  |team2i= " + "<br>" +
 "|blue1={{MatchRecapS7/Player|champion= " + blue_pick[0] + " |name= Evi |kills= 1 |deaths= 5 |assists= 3 |gold= 12.1 |cs= 271 |summonerspell1= Teleport |summonerspell2= Flash |item1= Sunfire Cape |item2= Spirit Visage  |item3= Guardian Angel  |item4= Mercury's Treads  |item5= Doran's Ring |item6= Ruby Crystal  |trinket= Warding Totem  |keystone= Courage of the Colossus }}" + "<br>" +
 
-/*
-			"{{PicksAndBansS7|team1=" + blue_team + " |team2=" + red_team + " |team1score= |team2score= |winner= " + "<br>" +
-			"|blueban1=" + blue_ban[0] + "      |redban1=" + red_ban[0] + "<br>" +
-			"|blueban2=" + blue_ban[1] + "      |redban2=" + red_ban[1] + "<br>" +
-			"|blueban3=" + blue_ban[2] + "      |redban3=" + red_ban[2] + "<br>" +
-			"|bluepick1=" + blue_pick[0] + "     |bluepick1role=" + blue_lane[0] + "<br>" +
-			"                                           |redpick1=" + red_pick[0] + "    |redpick1role=" + red_lane[0] + "<br>" +
-			"                                           |redpick2=" + red_pick[1] + "    |redpick2role=" + red_lane[1] + "<br>" +
-			"|bluepick2=" + blue_pick[1] + "     |bluepick2role=" + blue_lane[1] + "<br>" +
-			"|bluepick3=" + blue_pick[2] + "     |bluepick3role=" + blue_lane[2] + "<br>" +
-			"                                           |redpick3=" + red_pick[2] + "    |redpick3role=" + red_lane[2] + "<br>" +
-			"|blueban4=" + blue_ban[3] + "     |redban4=" + red_ban[3] + "<br>" +
-			"|blueban5=" + blue_ban[4] + "     |redban5=" + red_ban[4] + "<br>" +
-			"                                           |redpick4=" + red_pick[3] + "    |redpick4role=" + red_lane[3] + "<br>" +
-			"|bluepick4=" + blue_pick[3] + "     |bluepick4role=" + blue_lane[3] + "<br>" +
-			"|bluepick5=" + blue_pick[4] + "     |bluepick5role=" + blue_lane[4] + "<br>" +
-			"                                           |redpick5=" + red_pick[4] + "    |redpick5role=" + red_lane[4] + "<br>" +
-			"}}" + "<br>" +
-*/
 			"<br>" +
 			"{{BlockBox|end}}" + "<br>" +
 			"<br>";
-	
+*/
 	target.appendChild(newTag);
 }
