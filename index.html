@@ -17,6 +17,28 @@
 					<div id="region" class="region">Region : </div>
 				</header>
 			</article>
+			<article>
+				<description>
+					<h1>
+						Game Name:<input type="text" style="width:150px;" id="game_name"/>&nbsp;&nbsp;
+						Tournament Name:<input type="text" style="width:150px;" id="tournament_name"/>&nbsp;&nbsp;
+						Patch:<input type="number" value="7.2" step="0.1" style="width:50px;" id="patch"/>
+					</h1>
+					<span>Date:<input type="text"style="width:100px;" id="date"/></span>&nbsp;&nbsp;
+					<span>Time Zone:<input type="text"style="width:50px;" id="time_zone" list="time_zone_list"/></span>&nbsp;&nbsp;
+					<datalist id="time_zone_list">
+						<option value="KST"></option>
+						<option value="CET"></option>
+					</datalist>
+					<span>DST :<input type="checkbox" id="dst"/></span>&nbsp;&nbsp;
+					<span>Time :<input type="text"style="width:100px;" id="time"/></span>
+					<br />
+					<span>Game Time:<input type="text" style="width:100px;" id="game_time"/></span>&nbsp;&nbsp;
+					<span>Blue Score:<input type="number" min="0" value="0" style="width:50px;" id="blue_score"/></span>&nbsp;&nbsp;
+					<span>Red Score:<input type="number" min="0" value="0" style="width:50px;" id="red_score"/></span><br />
+					<span>VOD URL:<input type="text"style="width:400px;" id="vodlink"/></span>
+				</description>
+			</article>
 			<article class="scoreboard">
 				<section>
 					<h1 id="blue_team">Blue Team : </h1>
@@ -144,7 +166,7 @@
 			<article>
 				<section>
 					<h1><input type="submit" onclick="GetWikisCode();" value="output tag"/></h1>
-					<div id="code"></div>
+					<pre id="code"></pre>
 					<br />
 				</section>
 			</article>

@@ -5,7 +5,7 @@
 var JSON_DATA_CHAMP_IMG = new Array();
 var JSON_DATA_TEAM = {};
 var JSON_DATA_SUMMONER_SPELL = new Array();
-var JSON_DATA_ITEM_IMG = new Array();
+var JSON_DATA_ITEM = new Array();
 var JSON_DATA_MASTERY_IMG = new Array();
 
 var VER_CHAMPION = "";
@@ -38,7 +38,7 @@ var request = [
 	{ error_id: ERROR_ID_VERSION_GET_ERROR,		url: './php/main.php', data: { func:"GetVersion" },  }, // Version
 	{ error_id: ERROR_ID_CHAMPION_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetChampionImage" },  },
 	{ error_id: ERROR_ID_SUMMONER_SPELL_GET_ERROR,	url: './php/main.php', data: { func:"GetSummonerSpells" },  },
-	{ error_id: ERROR_ID_ITEM_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetItemTagImage" },  },
+	{ error_id: ERROR_ID_ITEM_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetItem" },  },
 	{ error_id: ERROR_ID_TEAM_GET_ERROR,		url: './json/team.json', data: {},  },
 	{ error_id: ERROR_ID_MASTERY_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetMasteryImage"},  },
 ];
@@ -94,15 +94,7 @@ $.when.apply(null, jqXHRList).done(function ()
 	);
 	
 	for(var key in itemImgJson.data)
-		JSON_DATA_ITEM_IMG[key] = itemImgJson.data[key];
-	
-	JSON_DATA_ITEM_IMG.sort(function(a, b)
-		{
-			if(a.name < b.name) return -1;
-			if(a.name > b.name) return 1;
-			if(a.name == b.name) return 0;
-		}
-	);
+		JSON_DATA_ITEM[key] = itemImgJson.data[key];
 	
 	for(var key in spellJson.data)
 	{
@@ -155,8 +147,7 @@ $.when.apply(null, jqXHRList).fail(function ()
 
 function InitBanPick()
 {
-	// ItemJson先頭に未選択データ追加
-	JSON_DATA_ITEM_IMG.unshift({ id : -1, name : "None", tags : "Dummy"} );
+	ReworkJson();
 	
 	// Region
 	SetRegionForm();
@@ -186,12 +177,12 @@ function InitBanPick()
 		// Item
 		for( var j = 1 ; j <= 6 ; ++j )
 		{
-			SetItemForm(JSON_DATA_ITEM_IMG, "blue_" + i, "blue_" + i + "_item_form_"+ j, j);
-			ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#blue_'+ i + '_item_form_' + j).val(), "blue_" + i, "blue_" + i + "_item_" + j);
+			SetItemForm(JSON_DATA_ITEM, "blue_" + i, "blue_" + i + "_item_form_"+ j, j);
+			ShowItemIcon(JSON_DATA_ITEM, $('select#blue_'+ i + '_item_form_' + j).val(), "blue_" + i, "blue_" + i + "_item_" + j);
 		}
 		// Trinket
-		SetTrinketForm(JSON_DATA_ITEM_IMG, "blue_" + i, "blue_" + i + "_trinket_form");
-		ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#blue_'+ i + '_trinket_form').val(), "blue_" + i, "blue_" + i + "_trinket");
+		SetTrinketForm(JSON_DATA_ITEM, "blue_" + i, "blue_" + i + "_trinket_form");
+		ShowItemIcon(JSON_DATA_ITEM, $('select#blue_'+ i + '_trinket_form').val(), "blue_" + i, "blue_" + i + "_trinket");
 	}
 	
 	// Red
@@ -219,13 +210,124 @@ function InitBanPick()
 		// Item
 		for( var j = 1 ; j <= 6 ; ++j )
 		{
-			SetItemForm(JSON_DATA_ITEM_IMG, "red_" + i, "red_" + i + "_item_form_"+ j, j);
-			ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#blue_'+ i + '_item_form_' + j).val(), "red_" + i, "red_" + i + "_item_" + j);
+			SetItemForm(JSON_DATA_ITEM, "red_" + i, "red_" + i + "_item_form_"+ j, j);
+			ShowItemIcon(JSON_DATA_ITEM, $('select#blue_'+ i + '_item_form_' + j).val(), "red_" + i, "red_" + i + "_item_" + j);
 		}
 		// Trinket
-		SetTrinketForm(JSON_DATA_ITEM_IMG, "red_" + i, "red_" + i + "_trinket_form");
-		ShowItemIcon(JSON_DATA_ITEM_IMG, $('select#red_'+ i + '_trinket_form').val(), "red_" + i, "red_" + i + "_trinket");
+		SetTrinketForm(JSON_DATA_ITEM, "red_" + i, "red_" + i + "_trinket_form");
+		ShowItemIcon(JSON_DATA_ITEM, $('select#red_'+ i + '_trinket_form').val(), "red_" + i, "red_" + i + "_trinket");
 	}
+}
+
+function ReworkJson()
+{
+	var del_item_id = [
+		// Golden Transcendence(Disable)
+		3461,
+		// Head of Kha'Zix
+		3175,
+		3410,
+		3416,
+		3422,
+		3455,
+		// Arcane Sweeper
+		3187,
+		3348,
+		// Death's Daughter
+		//3902,
+		// Enchantment
+		3671,
+		3672,
+		3673,
+		3675,
+		// Muramana
+		3043,
+		// Overlord's Bloodmail
+		3084,
+		// undefined
+		3632,
+		// Rod of Ages (Quick Charge)
+		3029,
+		// Seer Stone (Trinket)
+		3645,
+		// Seraph's Embrace
+		3040,
+		// Siege Teleport
+		3633,
+		3648,
+		// Tear of the Goddess (Quick Charge)
+		3073,
+		// Total Biscuit of Rejuvenation
+		2010,
+	];
+	// 不要なデータ削除
+	JSON_DATA_ITEM = JSON_DATA_ITEM.filter(function(v){
+		var isAlive = true;
+		
+		for( var i = 0 ; i < del_item_id.length ; ++i )
+		{
+			if( del_item_id[i] == v.id )
+			{
+				isAlive = false;
+				break;
+			}
+		}
+		
+		return isAlive;
+	});
+	
+	// Enchantment系のアイテム名をリネーム
+	for( var key in JSON_DATA_ITEM )
+	{
+		if( JSON_DATA_ITEM[key].name.indexOf("Enchantment") != -1 )
+		{
+			var base = "";
+			var enchant = "";
+			
+			if( $.inArray( "3711", JSON_DATA_ITEM[key].from ) >= 0)
+			{
+				base = "Tracker's Knife";
+			}
+			else if( $.inArray( "3715", JSON_DATA_ITEM[key].from ) >= 0)
+			{
+				base = "Skirmisher's Sabre";
+			}
+			else if( $.inArray( "3706", JSON_DATA_ITEM[key].from ) >= 0)
+			{
+				base = "Stalker's Blade";
+			}
+			
+			if( JSON_DATA_ITEM[key].name.indexOf("Warrior") != -1 )
+			{
+				enchant = "Warrior";
+			}
+			else if( JSON_DATA_ITEM[key].name.indexOf("Cinderhulk") != -1 )
+			{
+				enchant = "Cinderhulk";
+			}
+			else if( JSON_DATA_ITEM[key].name.indexOf("Runic Echoes") != -1 )
+			{
+				enchant = "Runic Echoes";
+			}
+			else if( JSON_DATA_ITEM[key].name.indexOf("Bloodrazor") != -1 )
+			{
+				enchant = "Bloodrazor";
+			}
+			
+			JSON_DATA_ITEM[key].name = base + " - " + enchant;
+		}
+	}
+	
+	JSON_DATA_ITEM.sort(function(a, b)
+		{
+			if(a.name < b.name) return -1;
+			if(a.name > b.name) return 1;
+			if(a.name == b.name) return 0;
+		}
+	);
+	
+	// ItemJson先頭に未選択データ追加
+	JSON_DATA_ITEM.unshift({ id : -1, name : "None", tags : "Dummy"} );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -539,8 +641,6 @@ function ShowItemIcon(data, key, getName, createName)
 	{
 		if( data[i].id == key )
 		{
-			console.log( data[i] );
-			console.log( "i : " + i );
 			if( key != -1 )
 			{
 				var item_img = data[i].image.full;
@@ -623,12 +723,12 @@ function ChangeSummonerSpellForm(form_name, parentName, index)
 
 function ChangeItemForm(form_name, parentName, index)
 {
-	ShowItemIcon(JSON_DATA_ITEM_IMG, $("select#" + form_name).val(), parentName, parentName + "_item_" + index);
+	ShowItemIcon(JSON_DATA_ITEM, $("select#" + form_name).val(), parentName, parentName + "_item_" + index);
 }
 
 function ChangeTrinketForm(form_name, parentName)
 {
-	ShowItemIcon(JSON_DATA_ITEM_IMG, $("select#" + form_name).val(), parentName, parentName + "_trinket");
+	ShowItemIcon(JSON_DATA_ITEM, $("select#" + form_name).val(), parentName, parentName + "_trinket");
 }
 
 function ChangeMasteryForm(form_name, parentName)
@@ -638,12 +738,24 @@ function ChangeMasteryForm(form_name, parentName)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-function GetItemName(id)
+function GetItemMasteryName(data,id)
 {
-	if(id >= -1)
-		return " ";
+	var name = " ";
 	
-	return JSON_DATA_ITEM_IMG.data[id].name;
+	if(id <= -1)
+		return name;
+	
+	
+	for( var key in data )
+	{
+		if( data[key].id == id )
+		{
+			name = data[key].name;
+			break;
+		}
+	}
+	
+	return name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -656,6 +768,20 @@ function GetWikisCode()
 	$("#code").children().remove();
 	
 	newTag = document.createElement("span");
+	
+	var game_name = $('#game_name').val();
+	var patch = $('#patch').val();
+	var tournament_name = $('#tournament_name').val();
+	var date = $('#date').val();
+	var time_zone = $('#time_zone').val();
+	var time = $('#time').val();
+	var dst = $("#dst").prop('checked') ? "yes" : "no";
+	
+	var game_time = $('#game_time').val();
+	var blue_score = $('#blue_score').val();
+	var red_score = $('#red_score').val();
+	var win_team = blue_score > red_score ? 1 : 2;
+	var vodlink = $('#vodlink').val();
 	
 	var blue_team = $('#blue_team_form').val();
 	var blue_total_gold = $('#blue_total_gold').val();
@@ -680,7 +806,7 @@ function GetWikisCode()
 	var blue_player_item4 = new Array();
 	var blue_player_item5 = new Array();
 	var blue_player_item6 = new Array();
-	var blue_player_trincket = new Array();
+	var blue_player_trinket = new Array();
 	
 	var red_team = $('#red_team_form').val();
 	var red_total_gold = $('#red_total_gold').val();
@@ -705,7 +831,7 @@ function GetWikisCode()
 	var red_player_item4 = new Array();
 	var red_player_item5 = new Array();
 	var red_player_item6 = new Array();
-	var red_player_trincket = new Array();
+	var red_player_trinket = new Array();
 	
 	for( var i = 1 ; i <= 5 ; ++i )
 	{
@@ -722,14 +848,15 @@ function GetWikisCode()
 		blue_player_cs.push($("#blue_player" + i + "_cs").val());
 		blue_player_spell1.push(JSON_DATA_SUMMONER_SPELL[$("#blue_" + i + "_summoner_spell_form_1").val()].name);
 		blue_player_spell2.push(JSON_DATA_SUMMONER_SPELL[$("#blue_" + i + "_summoner_spell_form_2").val()].name);
-		blue_player_mastery.push($("select#blue_" + i + "_mastery_form").val())
-		blue_player_item1.push(GetItemName($("select#blue_" + i + "_item_form_1").val()));
-		blue_player_item2.push(GetItemName($("select#blue_" + i + "_item_form_2").val()));
-		blue_player_item3.push(GetItemName($("select#blue_" + i + "_item_form_3").val()));
-		blue_player_item4.push(GetItemName($("select#blue_" + i + "_item_form_4").val()));
-		blue_player_item5.push(GetItemName($("select#blue_" + i + "_item_form_5").val()));
-		blue_player_item6.push(GetItemName($("select#blue_" + i + "_item_form_6").val()));
-		blue_player_trincket.push()
+		blue_player_mastery.push(GetItemMasteryName(JSON_DATA_MASTERY_IMG, $("select#blue_" + i + "_mastery_form").val()))
+		blue_player_item1.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_1").val()));
+		blue_player_item2.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_2").val()));
+		blue_player_item3.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_3").val()));
+		blue_player_item4.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_4").val()));
+		blue_player_item5.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_5").val()));
+		blue_player_item6.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_6").val()));
+		blue_player_trinket.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_trinket_form").val()));
+		
 		var red_ban_index = $("select#red_ban_" + i + "_champion_from").val();
 		var red_pick_index = $("select#red_" + i + "_champion_from").val();
 		
@@ -740,30 +867,27 @@ function GetWikisCode()
 	var tag = new Array();
 	
 	tag.push("<br>");
-	tag.push("{{BlockBox|Start}}<br>");
-	tag.push("{{MatchRecapS7/Header|" + blue_team + " |" + red_team + "}}{{MatchRecapS7|gamename= Game 1 |patch= 7.1 |team1= " + blue_team + " |team2= " + red_team + " |team1score= 0 |team2score= 1 |winner= 2 |team1ban1= " + blue_ban[0] + " |team1ban2= " + blue_ban[1] + " |team1ban3= " + blue_ban[2] + " |team1ban4= " + blue_ban[3] + " |team1ban5= " + blue_ban[4] + " |team2ban1= " + red_ban[0] + " |team2ban2= " + red_ban[1] + " |team2ban3= " + red_ban[2] + " |team2ban4= " + red_ban[3] + " |team2ban5= " + red_ban[4] + "<br>");
-	tag.push("|date= 2017-01-20 |dst= yes |KST= 20:00 |gamelength= 38:16 |tournament= LJL 2017 Spring" + "<br>");
-	tag.push("|team1g= " + blue_total_gold + " |team1k= " + blue_total_kill + " |team1d= "+ blue_total_dragon + " |team1b= " + blue_total_baron + " |team1t= " + blue_total_tower + " |team2g= " + red_total_gold + " |team2k= " + red_total_kill + " |team2d= " + red_total_dragon + " |team2b= " + red_total_baron + " |team2t= " + red_total_tower + " |team1rh=  |team2rh=  |team1i=  |team2i= " + "<br>");
+	tag.push("{{BlockBox|Start}}" + "<br>");
+	tag.push("{{MatchRecapS7/Header|" + blue_team + " |" + red_team + "}}" + "<br>");
+	tag.push("{{MatchRecapS7|gamename=" + game_name + " |patch=" + patch + " |team1=" + blue_team + " |team2=" + red_team + " |team1score=" + blue_score + " |team2score=" + red_score + " |winner=" + win_team + "<br>");
+	tag.push("|team1ban1=" + blue_ban[0] + " |team1ban2=" + blue_ban[1] + " |team1ban3=" + blue_ban[2] + " |team1ban4=" + blue_ban[3] + " |team1ban5=" + blue_ban[4] + "<br>");
+	tag.push("|team2ban1=" + red_ban[0] + " |team2ban2=" + red_ban[1] + " |team2ban3=" + red_ban[2] + " |team2ban4=" + red_ban[3] + " |team2ban5=" + red_ban[4] + "<br>");
+	tag.push("|date=" + date + " |dst=" + dst + " |" + time_zone + "=" + time + " |gamelength=" + game_time + " |tournament=" + tournament_name + "<br>");
+	tag.push("|team1g=" + blue_total_gold + " |team1k=" + blue_total_kill + " |team1d="+ blue_total_dragon + " |team1b=" + blue_total_baron + " |team1t=" + blue_total_tower + "<br>");
+	tag.push("|team2g=" + red_total_gold + " |team2k=" + red_total_kill + " |team2d=" + red_total_dragon + " |team2b=" + red_total_baron + " |team2t=" + red_total_tower + "<br>");
+	tag.push("|team1rh=  |team2rh=  |team1i=  |team2i= " + "<br>");
 	
 	for( var i = 1, j = 0 ; i <= 5 ; ++i, ++j )
 	{
-		tag.push("|blue" + i + "={{MatchRecapS7/Player|champion= " + blue_pick[j] + " |name= " + blue_player_name[j] + " |kills= " + blue_player_kill[j] + " |deaths= " + red_player_death[j] + " |assists= " + blue_player_assist[j] + " |gold= " + blue_player_gold[j] + " |cs= " + blue_player_cs[j] + " |summonerspell1= " + blue_player_spell1[j] + " |summonerspell2= " + blue_player_spell2[j] + " |item1= " + blue_player_item1[j] + " |item2= " + blue_player_item2[j] + " |item3= " + blue_player_item3[j] + " |item4= " + blue_player_item4[j] + " |item5= " + blue_player_item5[j] + " |item6= " + blue_player_item6[j] + " |trinket= " + blue_player_trincket[j] + " |keystone= " + blue_player_mastery[j] + " }}");
+		tag.push("|blue" + i + "={{MatchRecapS7/Player|champion= " + blue_pick[j] + " |name=" + blue_player_name[j] + " |kills=" + blue_player_kill[j] + " |deaths=" + red_player_death[j] + " |assists=" + blue_player_assist[j] + " |gold=" + blue_player_gold[j] + " |cs=" + blue_player_cs[j] + " |summonerspell1=" + blue_player_spell1[j] + " |summonerspell2=" + blue_player_spell2[j] + "<br>");
+		tag.push("|item1=" + blue_player_item1[j] + " |item2=" + blue_player_item2[j] + " |item3=" + blue_player_item3[j] + " |item4=" + blue_player_item4[j] + " |item5=" + blue_player_item5[j] + " |item6=" + blue_player_item6[j] + " |trinket=" + blue_player_trinket[j] + " |keystone=" + blue_player_mastery[j] + " }}" + "<br>");
 	}
 	
+	tag.push("|vodlink=" + vodlink + " |statslink=  |picksandbanspage=  }}" + "<br>");
+	tag.push("{{BlockBox|end}}" + "<br>");
 	tag.push("<br>");
 	
 	newTag.innerHTML = tag.join("");
-	/*
-	newTag.innerHTML = "<br>" +
-			"{{BlockBox|Start}}" + "<br>" +
-			"{{MatchRecapS7/Header|" + blue_team + " |" + red_team + "}}{{MatchRecapS7|gamename= Game 1 |patch= 7.1 |team1= " + blue_team + " |team2= " + red_team + " |team1score= 0 |team2score= 1 |winner= 2 |team1ban1= " + blue_ban[0] + " |team1ban2= " + blue_ban[1] + " |team1ban3= " + blue_ban[2] + " |team1ban4= " + blue_ban[3] + " |team1ban5= " + blue_ban[4] + " |team2ban1= " + red_ban[0] + " |team2ban2= " + red_ban[1] + " |team2ban3= " + red_ban[2] + " |team2ban4= " + red_ban[3] + " |team2ban5= " + red_ban[4] + "<br>" +
-			"|date= 2017-01-20 |dst= yes |KST= 20:00 |gamelength= 38:16 |tournament= LJL 2017 Spring" + "<br>" +
-			"|team1g= " + blue_total_gold + " |team1k= " + blue_total_kill + " |team1d= "+ blue_total_dragon + " |team1b= " + blue_total_baron + " |team1t= " + blue_total_tower + " |team2g= " + red_total_gold + " |team2k= " + red_total_kill + " |team2d= " + red_total_dragon + " |team2b= " + red_total_baron + " |team2t= " + red_total_tower + " |team1rh=  |team2rh=  |team1i=  |team2i= " + "<br>" +
-"|blue1={{MatchRecapS7/Player|champion= " + blue_pick[0] + " |name= Evi |kills= 1 |deaths= 5 |assists= 3 |gold= 12.1 |cs= 271 |summonerspell1= Teleport |summonerspell2= Flash |item1= Sunfire Cape |item2= Spirit Visage  |item3= Guardian Angel  |item4= Mercury's Treads  |item5= Doran's Ring |item6= Ruby Crystal  |trinket= Warding Totem  |keystone= Courage of the Colossus }}" + "<br>" +
-
-			"<br>" +
-			"{{BlockBox|end}}" + "<br>" +
-			"<br>";
-*/
+	
 	target.appendChild(newTag);
 }
