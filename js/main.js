@@ -349,6 +349,9 @@ function ReworkJson()
 			
 			JSON_DATA_ITEM[key].name = base + " - " + enchant;
 		}
+		
+		if( $.inArray( "Trinket", JSON_DATA_ITEM[key].tags ) >= 0 )
+			JSON_DATA_ITEM[key].name = JSON_DATA_ITEM[key].name.replace(/ \(Trinket\)/g, "" );
 	}
 	
 	JSON_DATA_ITEM.sort(function(a, b)
