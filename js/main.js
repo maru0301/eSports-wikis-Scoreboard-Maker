@@ -111,13 +111,16 @@ $.when.apply(null, jqXHRList).done(function ()
 	);
 	
 	for(var key in masteryImgJson.data)
+	{
 		JSON_DATA_MASTERY_IMG[key] = masteryImgJson.data[key];
+	}
+	JSON_DATA_MASTERY_IMG.tree = masteryImgJson.tree;
 	
 	JSON_DATA_MASTERY_IMG.sort(function(a, b)
 		{
-			if(a.id < b.id) return -1;
-			if(a.id > b.id) return 1;
-			if(a.id == b.id) return 0;
+			if(a.name < b.name) return -1;
+			if(a.name > b.name) return 1;
+			if(a.name == b.name) return 0;
 		}
 	);
 	
@@ -154,17 +157,18 @@ function InitBanPick()
 	
 	// Blue
 	SetTeamForm($('#region_form').val(), "blue");
+	SetSelected("select#blue_team_form", 0);
 	
 	for( var i = 1 ; i <= 5 ; ++i )
 	{
 		// Ban
-		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_ban_" + i, "blue_ban_" + i + "_champion_from");
-		ShowChampionIcon($('select#blue_ban_' + i + '_champion_from').val(), "blue_ban_" + i);
+		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_ban_" + i, "blue_ban_" + i + "_champion_form");
+		ShowChampionIcon($('select#blue_ban_' + i + '_champion_form').val(), "blue_ban_" + i);
 		// Champion
-		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_" + i, "blue_" + i + "_champion_from");
-		ShowChampionIcon($('select#blue_' + i + '_champion_from').val(), "blue_" + i);
+		SetChampionForm(JSON_DATA_CHAMP_IMG, "blue_" + i, "blue_" + i + "_champion_form");
+		ShowChampionIcon($('select#blue_' + i + '_champion_form').val(), "blue_" + i);
 		// Player
-		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#blue_team_form').val(),  "blue_player_" + i, "blue_" + i + "_player_from");
+		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#blue_team_form').val(),  "blue_player_" + i, "blue_" + i + "_player_form");
 		// Spell
 		for( var j = 1 ; j <= 2 ; ++ j )
 		{
@@ -187,17 +191,18 @@ function InitBanPick()
 	
 	// Red
 	SetTeamForm($('#region_form').val(), "red");
+	SetSelected("select#red_team_form", 1);
 	
 	for( var i = 1 ; i <= 5 ; ++i )
 	{
 		// Ban
-		SetChampionForm(JSON_DATA_CHAMP_IMG, "red_ban_" + i, "red_ban_" + i + "_champion_from");
-		ShowChampionIcon($('select#red_ban_' + i + '_champion_from').val(), "red_ban_" + i);
+		SetChampionForm(JSON_DATA_CHAMP_IMG, "red_ban_" + i, "red_ban_" + i + "_champion_form");
+		ShowChampionIcon($('select#red_ban_' + i + '_champion_form').val(), "red_ban_" + i);
 		// Champion
-		SetChampionForm(JSON_DATA_CHAMP_IMG, "red_" + i, "red_" + i + "_champion_from");
-		ShowChampionIcon($('select#red_' + i + '_champion_from').val(), "red_" + i);
+		SetChampionForm(JSON_DATA_CHAMP_IMG, "red_" + i, "red_" + i + "_champion_form");
+		ShowChampionIcon($('select#red_' + i + '_champion_form').val(), "red_" + i);
 		// Player
-		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#red_team_form').val(),  "red_player_" + i, "red_" + i + "_player_from");
+		SetPlayerForm(JSON_DATA_TEAM, $('#region_form').val(), $('#red_team_form').val(),  "red_player_" + i, "red_" + i + "_player_form");
 		// Spell
 		for( var j = 1 ; j <= 2 ; ++ j )
 		{
@@ -217,10 +222,18 @@ function InitBanPick()
 		SetTrinketForm(JSON_DATA_ITEM, "red_" + i, "red_" + i + "_trinket_form");
 		ShowItemIcon(JSON_DATA_ITEM, $('select#red_'+ i + '_trinket_form').val(), "red_" + i, "red_" + i + "_trinket");
 	}
+	
+	for( var i = 1 ; i <= 5 ; ++i )
+	{
+		SetSelected("select#blue_" + i + "_player_form", (i-1));
+		SetSelected("select#red_" + i + "_player_form", (i-1));
+	}
 }
 
 function ReworkJson()
 {
+	// 不要なデータ削除
+	
 	var del_item_id = [
 		// Golden Transcendence(Disable)
 		3461,
@@ -260,7 +273,7 @@ function ReworkJson()
 		// Total Biscuit of Rejuvenation
 		2010,
 	];
-	// 不要なデータ削除
+	// Item
 	JSON_DATA_ITEM = JSON_DATA_ITEM.filter(function(v){
 		var isAlive = true;
 		
@@ -272,6 +285,26 @@ function ReworkJson()
 				break;
 			}
 		}
+		
+		return isAlive;
+	});
+	
+	// Mestery
+	var mastery_id = new Array();
+	
+	for( var key in JSON_DATA_MASTERY_IMG.tree )
+	{
+		var list = JSON_DATA_MASTERY_IMG.tree[key].pop().masteryTreeItems;
+		for( var i in list )
+			mastery_id.push(list[i].masteryId);
+	}
+	
+	JSON_DATA_MASTERY_IMG = JSON_DATA_MASTERY_IMG.filter(function(v)
+	{
+		var isAlive = true;
+		
+		if( $.inArray( v.id, mastery_id ) < 0 )
+			isAlive = false;
 		
 		return isAlive;
 	});
@@ -707,13 +740,13 @@ function ChangeTeamForm(side)
 {
 	for( var i = 1 ; i <= 5 ; i++ )
 	{
-		SetPlayerForm(JSON_DATA_TEAM, $('select#region_form').val(), $("select#" + side + "_team_form").val(),  side + "_" + i, side + "_" + i + "_player_from");
+		SetPlayerForm(JSON_DATA_TEAM, $('select#region_form').val(), $("select#" + side + "_team_form").val(),  side + "_" + i, side + "_" + i + "_player_form");
 	}
 }
 
 function ChangeChampionForm(name)
 {
-	ShowChampionIcon($("select#" + name + "_champion_from").val(), name);
+	ShowChampionIcon($("select#" + name + "_champion_form").val(), name);
 }
 
 function ChangeSummonerSpellForm(form_name, parentName, index)
@@ -745,7 +778,6 @@ function GetItemMasteryName(data,id)
 	if(id <= -1)
 		return name;
 	
-	
 	for( var key in data )
 	{
 		if( data[key].id == id )
@@ -756,6 +788,12 @@ function GetItemMasteryName(data,id)
 	}
 	
 	return name;
+}
+
+function SetSelected(name, index)
+{
+	var obj = $(name);
+	obj[0].options[index].selected = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -835,12 +873,13 @@ function GetWikisCode()
 	
 	for( var i = 1 ; i <= 5 ; ++i )
 	{
-		var blue_ban_index = $("select#blue_ban_" + i + "_champion_from").val();
-		var blue_pick_index = $("select#blue_" + i + "_champion_from").val();
+		// Blue
+		var blue_ban_index = $("select#blue_ban_" + i + "_champion_form").val();
+		var blue_pick_index = $("select#blue_" + i + "_champion_form").val();
 		
 		blue_ban.push(JSON_DATA_CHAMP_IMG[blue_ban_index].key.toLowerCase());
 		blue_pick.push(JSON_DATA_CHAMP_IMG[blue_pick_index].key.toLowerCase());
-		blue_player_name.push($("select#blue_" + i + "_player_from" ).val());
+		blue_player_name.push($("select#blue_" + i + "_player_form" ).val());
 		blue_player_kill.push($("#blue_player" + i + "_kill").val());
 		blue_player_death.push($("#blue_player" + i + "_death").val());
 		blue_player_assist.push($("#blue_player" + i + "_assist").val());
@@ -857,11 +896,28 @@ function GetWikisCode()
 		blue_player_item6.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_item_form_6").val()));
 		blue_player_trinket.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#blue_" + i + "_trinket_form").val()));
 		
-		var red_ban_index = $("select#red_ban_" + i + "_champion_from").val();
-		var red_pick_index = $("select#red_" + i + "_champion_from").val();
+		// Red
+		var red_ban_index = $("select#red_ban_" + i + "_champion_form").val();
+		var red_pick_index = $("select#red_" + i + "_champion_form").val();
 		
 		red_ban.push(JSON_DATA_CHAMP_IMG[red_ban_index].key.toLowerCase());
 		red_pick.push(JSON_DATA_CHAMP_IMG[red_pick_index].key.toLowerCase());
+		red_player_name.push($("select#red_" + i + "_player_form" ).val());
+		red_player_kill.push($("#red_player" + i + "_kill").val());
+		red_player_death.push($("#red_player" + i + "_death").val());
+		red_player_assist.push($("#red_player" + i + "_assist").val());
+		red_player_gold.push($("#red_player" + i + "_gold").val());
+		red_player_cs.push($("#red_player" + i + "_cs").val());
+		red_player_spell1.push(JSON_DATA_SUMMONER_SPELL[$("#red_" + i + "_summoner_spell_form_1").val()].name);
+		red_player_spell2.push(JSON_DATA_SUMMONER_SPELL[$("#red_" + i + "_summoner_spell_form_2").val()].name);
+		red_player_mastery.push(GetItemMasteryName(JSON_DATA_MASTERY_IMG, $("select#red_" + i + "_mastery_form").val()))
+		red_player_item1.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_item_form_1").val()));
+		red_player_item2.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_item_form_2").val()));
+		red_player_item3.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_item_form_3").val()));
+		red_player_item4.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_item_form_4").val()));
+		red_player_item5.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_item_form_5").val()));
+		red_player_item6.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_item_form_6").val()));
+		red_player_trinket.push(GetItemMasteryName(JSON_DATA_ITEM, $("select#red_" + i + "_trinket_form").val()));
 	}
 	
 	var tag = new Array();
@@ -876,12 +932,25 @@ function GetWikisCode()
 	tag.push("|team1g=" + blue_total_gold + " |team1k=" + blue_total_kill + " |team1d="+ blue_total_dragon + " |team1b=" + blue_total_baron + " |team1t=" + blue_total_tower + "<br>");
 	tag.push("|team2g=" + red_total_gold + " |team2k=" + red_total_kill + " |team2d=" + red_total_dragon + " |team2b=" + red_total_baron + " |team2t=" + red_total_tower + "<br>");
 	tag.push("|team1rh=  |team2rh=  |team1i=  |team2i= " + "<br>");
+	tag.push("<br>");
 	
+	// Blue
 	for( var i = 1, j = 0 ; i <= 5 ; ++i, ++j )
 	{
-		tag.push("|blue" + i + "={{MatchRecapS7/Player|champion= " + blue_pick[j] + " |name=" + blue_player_name[j] + " |kills=" + blue_player_kill[j] + " |deaths=" + red_player_death[j] + " |assists=" + blue_player_assist[j] + " |gold=" + blue_player_gold[j] + " |cs=" + blue_player_cs[j] + " |summonerspell1=" + blue_player_spell1[j] + " |summonerspell2=" + blue_player_spell2[j] + "<br>");
+		tag.push("|blue" + i + "={{MatchRecapS7/Player|champion=" + blue_pick[j] + " |name=" + blue_player_name[j] + " |kills=" + blue_player_kill[j] + " |deaths=" + blue_player_death[j] + " |assists=" + blue_player_assist[j] + " |gold=" + blue_player_gold[j] + " |cs=" + blue_player_cs[j] + " |summonerspell1=" + blue_player_spell1[j] + " |summonerspell2=" + blue_player_spell2[j] + "<br>");
 		tag.push("|item1=" + blue_player_item1[j] + " |item2=" + blue_player_item2[j] + " |item3=" + blue_player_item3[j] + " |item4=" + blue_player_item4[j] + " |item5=" + blue_player_item5[j] + " |item6=" + blue_player_item6[j] + " |trinket=" + blue_player_trinket[j] + " |keystone=" + blue_player_mastery[j] + " }}" + "<br>");
 	}
+	
+	tag.push("<br>");
+	
+	// Red
+	for( var i = 1, j = 0 ; i <= 5 ; ++i, ++j )
+	{
+		tag.push("|red" + i + "={{MatchRecapS7/Player|champion=" + red_pick[j] + " |name=" + red_player_name[j] + " |kills=" + red_player_kill[j] + " |deaths=" + red_player_death[j] + " |assists=" + red_player_assist[j] + " |gold=" + red_player_gold[j] + " |cs=" + red_player_cs[j] + " |summonerspell1=" + red_player_spell1[j] + " |summonerspell2=" + red_player_spell2[j] + "<br>");
+		tag.push("|item1=" + red_player_item1[j] + " |item2=" + red_player_item2[j] + " |item3=" + red_player_item3[j] + " |item4=" + red_player_item4[j] + " |item5=" + red_player_item5[j] + " |item6=" + red_player_item6[j] + " |trinket=" + red_player_trinket[j] + " |keystone=" + red_player_mastery[j] + " }}" + "<br>");
+	}
+	
+	tag.push("<br>");
 	
 	tag.push("|vodlink=" + vodlink + " |statslink=  |picksandbanspage=  }}" + "<br>");
 	tag.push("{{BlockBox|end}}" + "<br>");

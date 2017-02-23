@@ -10,16 +10,8 @@ class RiotApi
 	
 	private function GetJson( $url )
 	{
-		$proxy = array(
-			"http" => array(
-					"proxy" => "proxy2.hq.scei.sony.co.jp:10080",
-					'request_fulluri' => true,
-				),
-		);
-		
-		$proxy_context = stream_context_create($proxy);
 		$master_url = $url . $this->api_key;
-		$json = file_get_contents($master_url, false, $proxy_context );
+		$json = file_get_contents($master_url);
 		$json = mb_convert_encoding($json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
 		
 		return $json;
@@ -55,7 +47,7 @@ class RiotApi
 	
 	public function GetMasteryImage()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/mastery?masteryListData=image&api_key=');
+		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/mastery?masteryListData=image,ranks,tree&api_key=');
 		
 		return $json;
 	}
