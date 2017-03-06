@@ -6,7 +6,7 @@ if( !isset( $_GET['func'] ) ) return;
 
 class RiotApi
 {
-	private $api_key = '561cb811-20fb-4e50-bc7f-3f3c8cd345e4';
+	private $api_key = '';
 	
 	private function GetJson( $url )
 	{
