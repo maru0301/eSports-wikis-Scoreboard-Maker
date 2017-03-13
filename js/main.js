@@ -8,6 +8,8 @@ var JSON_DATA_SUMMONER_SPELL = new Array();
 var JSON_DATA_ITEM = new Array();
 var JSON_DATA_MASTERY_IMG = new Array();
 
+var MATCH_HISTORY_JSON = {};
+
 var VER_CHAMPION = "";
 var VER_SN_SPELLS = "";
 var VER_ITEM = "";
@@ -35,12 +37,12 @@ function errorDlg(msg)
 ////////////////////////////////////////////////////////////////////////////////////
 //
 var request = [
-	{ error_id: ERROR_ID_VERSION_GET_ERROR,		url: './php/main.php', data: { func:"GetVersion" },  }, // Version
+	{ error_id: ERROR_ID_VERSION_GET_ERROR,			url: './php/main.php', data: { func:"GetVersion" },  }, // Version
 	{ error_id: ERROR_ID_CHAMPION_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetChampionImage" },  },
 	{ error_id: ERROR_ID_SUMMONER_SPELL_GET_ERROR,	url: './php/main.php', data: { func:"GetSummonerSpells" },  },
-	{ error_id: ERROR_ID_ITEM_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetItem" },  },
-	{ error_id: ERROR_ID_TEAM_GET_ERROR,		url: './json/team.json', data: {},  },
-	{ error_id: ERROR_ID_MASTERY_IMG_GET_ERROR,	url: './php/main.php', data: { func:"GetMasteryImage"},  },
+	{ error_id: ERROR_ID_ITEM_IMG_GET_ERROR,		url: './php/main.php', data: { func:"GetItem" },  },
+	{ error_id: ERROR_ID_TEAM_GET_ERROR,			url: './json/team.json', data: {},  },
+	{ error_id: ERROR_ID_MASTERY_IMG_GET_ERROR,		url: './php/main.php', data: { func:"GetMasteryImage"},  },
 ];
 
 var jqXHRList = [];
@@ -962,4 +964,211 @@ function GetWikisCode()
 	newTag.innerHTML = tag.join("");
 	
 	target.appendChild(newTag);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+function GetMatchDetailData(url)
+{
+	if(url !== "")
+	{
+		var index = url.search("#");
+		url = url.substr(index);
+		index = url.search("/");
+		url = url.substr(index+1);
+		index = url.search("/");
+
+		var gameRealm = url.substr(0, index);
+
+		url = url.substr(index+1);
+		index = url.search('[\?]');
+
+		var gameId = url.substr(0, index);
+
+		url = url.substr(index+1);
+		index = url.search('=');
+		url = url.substr(index+1);
+		index = url.search('&');
+		
+		if( index != -1)
+			url = url.substr(0, index);
+		
+		var gameHash = url;
+
+		url_path = "https://acs.leagueoflegends.com/v1/stats/game/" + gameRealm + "/" + gameId + "?gameHash=" + gameHash;
+
+		$.ajax(
+		{
+			url: url_path,
+			type: 'GET',
+			dataType: 'json',
+			scriptCharset: 'utf-8',
+			
+			success: function (data)
+			{
+				console.log("GetURL : Success");
+				console.log(data);
+
+				MATCH_HISTORY_JSON.game = {};
+
+				MATCH_HISTORY_JSON.game = GetMatchData(data);
+				MATCH_HISTORY_JSON.teams = [];
+				MATCH_HISTORY_JSON.teams = GetTeamData(data);
+
+				ReflectData(MATCH_HISTORY_JSON);
+
+				console.log(MATCH_HISTORY_JSON);
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown)
+			{
+				console.log("GetURL : Fail");
+				console.log(XMLHttpRequest.responseText);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+	}
+}
+
+function GetMatchData(data)
+{
+	var set_data = {};
+
+	set_data.gameVer = data.gameVersion;
+	
+	return set_data;
+}
+
+function GetTeamData(data)
+{
+	var set_data = [];
+
+	for( var i = 0 ; i < 2 ; ++i )
+	{
+		set_data[i] = {};
+		set_data[i] = SetTeamDataCommon(data.teams[i]);
+		set_data[i].player = [];
+		set_data[i].player = GetPlayerData(data, set_data[i].teamId);
+
+		set_data[i].kill = 0;
+		set_data[i].gold = 0;
+		
+		for( var j = 0 ; j < set_data[i].player.length ; ++j )
+		{
+			set_data[i].kill += set_data[i].player[j].kill;
+			set_data[i].gold += set_data[i].player[j].gold;
+		}
+
+		var tag = set_data[i].player[0].name;
+		var index = tag.search(" ");
+		tag = tag.substr(0, index);
+
+		set_data[i].team_name = tag;
+	}
+
+	return set_data;
+}
+
+function SetTeamDataCommon(data)
+{
+	var set_data = {};
+
+	set_data.tower = data.towerKills;
+	set_data.dragon = data.dragonKills;
+	set_data.baron = data.baronKills;
+	set_data.rift_herald = data.riftHeraldKills;
+	set_data.inhibitor = data.inhibitorKills;
+	set_data.ban = data.bans;
+	set_data.win = data.win === "Win" ? true : false;
+	set_data.teamId = data.teamId;
+
+	return set_data;
+}
+
+function GetPlayerData(data, teamId)
+{
+	var set_data = [];
+
+	for( var i = 0, index = 0 ; i < data.participants.length ; ++i)
+	{
+		if( teamId == data.participants[i].teamId )
+		{
+			set_data[index] = {};
+			set_data[index].participantId = data.participants[i].participantId;
+			set_data[index].championId = data.participants[i].championId;
+
+			set_data[index].spell = [];
+			set_data[index].spell[0] = data.participants[i].spell1Id;
+			set_data[index].spell[1] = data.participants[i].spell2Id;
+
+			set_data[index].kill = data.participants[i].stats.kills;
+			set_data[index].assiste = data.participants[i].stats.assists;
+			set_data[index].death = data.participants[i].stats.deaths;
+			set_data[index].gold = data.participants[i].stats.goldEarned;
+			set_data[index].cs = data.participants[i].stats.totalMinionsKilled;
+
+			set_data[index].items = [];
+			set_data[index].items[0] = data.participants[i].stats.item0;
+			set_data[index].items[1] = data.participants[i].stats.item1;
+			set_data[index].items[2] = data.participants[i].stats.item2;
+			set_data[index].items[3] = data.participants[i].stats.item3;
+			set_data[index].items[4] = data.participants[i].stats.item4;
+			set_data[index].items[5] = data.participants[i].stats.item5;
+			set_data[index].trinket = data.participants[i].stats.item6;
+
+			set_data[index].lane = data.participants[i].timeline.lane;
+
+			for( var j = 0 ; j < data.participantIdentities.length ; ++j )
+			{
+				if( set_data[index].participantId == data.participantIdentities[j].participantId )
+				{
+					set_data[index].name = data.participantIdentities[j].player.summonerName;
+					break;
+				}
+			}
+			index++;
+			continue;
+		}
+	}
+
+	return set_data;
+}
+
+function ReflectData(data)
+{
+	// Region
+	var region = "";
+	for(var i in JSON_DATA_TEAM)
+	{
+		for(var j in JSON_DATA_TEAM[i])
+		{
+			if(data.teams[0].team_name == JSON_DATA_TEAM[i][j].code)
+			{
+				region = i;
+				break;
+			}
+		}
+
+		if(region != "")
+			break;		
+	}
+
+	$('#region_form').val(region);
+	document.getElementById('region_form').onchange();
+
+	// Team
+	var team_id = ["blue_team_form", "red_team_form"];
+
+	for(var i = 0 ; i < data.teams.length ; ++i)
+	{
+		for(var key in JSON_DATA_TEAM[region])
+		{
+			if( data.teams[i].team_name == JSON_DATA_TEAM[region][key].code )
+			{
+				$('#'+team_id[i]).val(JSON_DATA_TEAM[region][key].code);
+				document.getElementById(team_id[i]).onchange();
+				break;
+			}
+		}
+	}
 }

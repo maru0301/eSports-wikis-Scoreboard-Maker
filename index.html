@@ -14,7 +14,11 @@
 				<header>
 					<h1>eSports wikis Scoreboard Maker</h1>
 					<hr>
-					<div id="region" class="region">Region : </div>
+					<div id="region" class="region">Region : </div><br>
+					<div>
+						MatchDetailURL : <input type="input" style="width:450px" id="MachDeteailURL">
+						<input type="submit" value="Reflect" onClick="GetMatchDetailData($('#MachDeteailURL').val())">
+					</div>
 				</header>
 			</article>
 			<article>
