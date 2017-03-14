@@ -1126,6 +1126,11 @@ function GetPlayerData(data, teamId)
 					break;
 				}
 			}
+
+			set_data[index].mastery = [];
+			for( var j = 0 ; j < data.participants[i].masteries.length ; ++j )
+				set_data[index].mastery[j] = data.participants[i].masteries[j].masteryId;
+
 			index++;
 			continue;
 		}
@@ -1138,6 +1143,7 @@ function ReflectData(data)
 {
 	// Region
 	var region = "";
+
 	for(var i in JSON_DATA_TEAM)
 	{
 		for(var j in JSON_DATA_TEAM[i])
@@ -1156,19 +1162,135 @@ function ReflectData(data)
 	$('#region_form').val(region);
 	document.getElementById('region_form').onchange();
 
+	// Patch
+	var version = data.game.gameVer.substr(0,3);
+
+	$('#patch').val(version);
+
 	// Team
-	var team_id = ["blue_team_form", "red_team_form"];
+	var team_id = ["blue", "red"];
+	var team_key = ""; 
+	var work_obj = null;
 
 	for(var i = 0 ; i < data.teams.length ; ++i)
 	{
+		// TeamName
 		for(var key in JSON_DATA_TEAM[region])
 		{
 			if( data.teams[i].team_name == JSON_DATA_TEAM[region][key].code )
 			{
-				$('#'+team_id[i]).val(JSON_DATA_TEAM[region][key].code);
-				document.getElementById(team_id[i]).onchange();
+				team_key = key;
+				work_obj = $('#'+team_id[i]+'_team_form');
+				work_obj.val(JSON_DATA_TEAM[region][key].code);
+				work_obj.val(JSON_DATA_TEAM[region][key].code).change();
 				break;
 			}
 		}
+		// Ban
+		for( var j = 0 ; j < data.teams[i].ban.length ; ++j )	
+		{
+			for( var k = 0 ; k < JSON_DATA_CHAMP_IMG.length ; ++ k )
+			{
+				if( data.teams[i].ban[j].championId == JSON_DATA_CHAMP_IMG[k].id )
+				{
+					work_obj = $(team_id[i] + '_ban_' + (j + 1) + '_champion_form #' + team_id[i] + '_ban_' + (j + 1) + '_champion_form');
+					work_obj.val(k);
+					work_obj.val(k).change();
+					break;
+				}
+			}
+		}
+		// Team(Gold, Object)
+		$('#' + team_id[i] + '_total_gold').val(GoldTok(data.teams[i].gold));
+		$('#' + team_id[i] + '_total_kill').val(data.teams[i].kill);
+		$('#' + team_id[i] + '_total_tower').val(data.teams[i].tower);
+		$('#' + team_id[i] + '_total_dragon').val(data.teams[i].dragon);
+		$('#' + team_id[i] + '_total_baron').val(data.teams[i].baron);
+
+		// Player
+		for( var j = 0 ; j < data.teams[i].player.length ; ++j )
+		{
+			// Name
+			var name = data.teams[i].player[j].name.replace(data.teams[i].team_name + " ", "");
+			for( var k = 0 ; k < JSON_DATA_TEAM[region][team_key].player.length ; ++k )
+			{
+				if( name == JSON_DATA_TEAM[region][team_key].player[k])
+				{
+					work_obj = $(team_id[i] + '_' + (j + 1) + '_player_form #' + team_id[i] + '_' + (j + 1) + '_player_form');
+					work_obj.val(name);
+					break;
+				}
+			}
+			// Kill
+			$('#' + team_id[i] + '_player' + (j + 1) + "_kill").val(data.teams[i].player[j].kill);
+			// Death
+			$('#' + team_id[i] + '_player' + (j + 1) + "_death").val(data.teams[i].player[j].death);
+			// Assiste
+			$('#' + team_id[i] + '_player' + (j + 1) + "_assist").val(data.teams[i].player[j].assiste);
+			// Gold
+			$('#' + team_id[i] + '_player' + (j + 1) + "_gold").val(GoldTok(data.teams[i].player[j].gold));
+			// CS
+			$('#' + team_id[i] + '_player' + (j + 1) + "_cs").val(data.teams[i].player[j].cs);
+			// Champion
+			for( var k = 0 ; k < JSON_DATA_CHAMP_IMG.length ; ++ k )
+			{
+				if( data.teams[i].player[j].championId == JSON_DATA_CHAMP_IMG[k].id )
+				{
+					work_obj = $(team_id[i] + '_' + (j + 1) + '_champion_form #' + team_id[i] + '_' + (j + 1) + "_champion_form");
+					work_obj.val(k);
+					work_obj.change();
+					break;
+				}
+			}
+			// Spell
+			for( var k = 0 ; k < data.teams[i].player[j].spell.length ; ++k )
+			{
+				for( var l = 0 ; l < JSON_DATA_SUMMONER_SPELL.length ; ++l )
+				{
+					if( data.teams[i].player[j].spell[k] == JSON_DATA_SUMMONER_SPELL[l].id )
+					{
+						work_obj = $('#' + team_id[i] + '_' + (j + 1) + "_summoner_spell_form_" + (k+1));
+						work_obj.val(l);
+						work_obj.change();
+						break;
+					}
+				}
+			}
+			// Mastery
+			for( var k = 0 ; k < data.teams[i].player[j].mastery.length ; ++k)
+			{
+				for( var l = 0 ; l < JSON_DATA_MASTERY_IMG.length ; ++l )
+				{
+					if( data.teams[i].player[j].mastery[k] == JSON_DATA_MASTERY_IMG[l].id )
+					{
+						work_obj = $('#' + team_id[i] + '_' + (j + 1) + "_mastery_form");
+						work_obj.val(data.teams[i].player[j].mastery[k]);
+						work_obj.change();
+						break;
+					}
+				}
+			}
+			// Item
+			for( var k = 0 ; k < data.teams[i].player[j].items.length ; ++k)
+			{
+				work_obj = $('#' + team_id[i] + '_' + (j + 1) + "_item_form_" + (k+1));
+				work_obj.val( data.teams[i].player[j].items[k] == 0 ? -1 : data.teams[i].player[j].items[k] );
+				work_obj.change();
+			}
+			
+			// Trincket
+			work_obj = $('#' + team_id[i] + '_' + (j + 1) + "_trinket_form");
+			work_obj.val(data.teams[i].player[j].trinket);
+			work_obj.change();
+		}
 	}
+}
+
+function GoldTok(num)
+{
+	num /= 100; 
+	num = Math.round(num);
+	num /= 10;
+
+	return num;
 }
