@@ -1148,10 +1148,17 @@ function ReflectData(data)
 	{
 		for(var j in JSON_DATA_TEAM[i])
 		{
-			if(data.teams[0].team_name == JSON_DATA_TEAM[i][j].code)
+			if(data.teams[0].team_name.toUpperCase() == JSON_DATA_TEAM[i][j].tag.toUpperCase())
 			{
-				region = i;
-				break;
+				var name = data.teams[0].player[0].name.replace(data.teams[0].team_name + " ", "");					
+				for( var k = 0 ; k < data.teams[0].player.length ; ++k )
+				{
+					if( name == JSON_DATA_TEAM[i][j].player[k])
+					{
+						region = i;
+						break;
+					}
+				}
 			}
 		}
 
@@ -1177,7 +1184,7 @@ function ReflectData(data)
 		// TeamName
 		for(var key in JSON_DATA_TEAM[region])
 		{
-			if( data.teams[i].team_name == JSON_DATA_TEAM[region][key].code )
+			if( data.teams[i].team_name.toUpperCase() == JSON_DATA_TEAM[region][key].tag.toUpperCase() )
 			{
 				team_key = key;
 				work_obj = $('#'+team_id[i]+'_team_form');

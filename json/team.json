@@ -2,6 +2,7 @@
 	"LJL": {
 		"7th heaven": {
 			"code" : "7h",
+			"tag" :  "7h",
 			"player" : [
 					"SatoRy",
 					"Savage",
@@ -17,6 +18,7 @@
 		},
 		"DeatnatioN FM" : {
 			"code" : "DFM",
+			"tag" :  "DFM",
 			"player" : [
 					"Yutapon",
 					"Paz",
@@ -29,6 +31,7 @@
 		},
 		"Rampage" : {
 			"code" : "RPG",
+			"tag" :  "RPG",
 			"player" : [
 					"Evi",
 					"Tussle",
@@ -41,6 +44,7 @@
 		},
 		"Rascal Jester" : {
 			"code" : "RJ",
+			"tag" :  "RJ",
 			"player" : [
 					"Atyamomo",
 					"WyverN",
@@ -53,6 +57,7 @@
 		},
 		"SCARZ": {
 			"code" : "SCARZ",
+			"tag" :  "SZ",
 			"player" : [
 					"Arfoad",
 					"DayDream",
@@ -68,6 +73,7 @@
 		},
 		"USG": {
 			"code" : "USG",
+			"tag" :  "USG",
 			"player" : [
 					"apaMEN",
 					"Neo",
@@ -81,8 +87,9 @@
 	"LCL": {
 		"Gambit.CIS": {
 			"code" : "Gambit.CIS",
+			"tag" :  "GMB",
 			"player" : [
-					"FIRess",
+					"FIRees",
 					"Diamondprox",
 					"zoiren",
 					"NikStar",
@@ -91,6 +98,7 @@
 		},
 		"M19 Team": {
 			"code" : "M19 Team",
+			"tag" :  "M19",
 			"player" : [
 					"Smurf",
 					"PvPStejos",
@@ -101,6 +109,7 @@
 		},
 		"Natus Vincere.CIS": {
 			"code" : "Natus Vincere.CIS",
+			"tag" :  "NV",
 			"player" : [
 					"Zvene",
 					"Gumbeq",
@@ -111,6 +120,7 @@
 		},
 		"RoX": {
 			"code" : "RoX",
+			"tag" :  "ROX",
 			"player" : [
 					"Charger",
 					"Punisher",
@@ -121,6 +131,7 @@
 		},
 		"Team Just Alpha": {
 			"code" : "Team Just Alpha",
+			"tag" :  "JSA",
 			"player" : [
 					"BOSS",
 					"SaDJesteRRR",
@@ -131,6 +142,7 @@
 		},
 		"Vaevictis eSports": {
 			"code" : "Vaevictis eSports",
+			"tag" :  "VS",
 			"player" : [
 					"Dark Solece",
 					"DoubleAiM",
@@ -141,6 +153,7 @@
 		},
 		"Vega Squadron": {
 			"code" : "Vega Squadron",
+			"tag" :  "VEG",
 			"player" : [
 					"NoNholy",
 					"Zanzarah",
@@ -151,6 +164,7 @@
 		},
 		"Virtus.pro": {
 			"code" : "Virtus.pro",
+			"tag" :  "VP",
 			"player" : [
 					"Doxy",
 					"Kreox",
