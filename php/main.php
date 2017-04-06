@@ -19,14 +19,14 @@ class RiotApi
 	
 	public function GetVersion()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/jp/v1.2/realm?api_key=');
+		$json = $this->GetJson('https://jp1.api.riotgames.com/lol/static-data/v3/realms?api_key=');
 		
 		return $json;
 	}
 	
 	public function GetChampionImage()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/jp/v1.2/champion?champData=image&api_key=');
+		$json = $this->GetJson('https://jp1.api.riotgames.com/lol/static-data/v3/champions?champData=image&api_key=');
 		
 		return $json;
 	}
@@ -40,14 +40,14 @@ class RiotApi
 	
 	public function GetItem()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=from,image,tags&api_key=');
+		$json = $this->GetJson('https://na1.api.riotgames.com/lol/static-data/v3/items?itemListData=image&api_key=');
 		
 		return $json;
 	}
 	
 	public function GetMasteryImage()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/mastery?masteryListData=image,ranks,tree&api_key=');
+		$json = $this->GetJson('https://na1.api.riotgames.com/lol/static-data/v3/masteries?masteryListData=image,ranks,tree&api_key=');
 		
 		return $json;
 	}
