@@ -11,7 +11,7 @@ class RiotApi
 	private function GetJson( $url )
 	{
 		$master_url = $url . $this->api_key;
-		$json = file_get_contents($master_url);
+		$json = file_get_contents($master_url, false);
 		$json = mb_convert_encoding($json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
 		
 		return $json;
@@ -33,7 +33,7 @@ class RiotApi
 	
 	public function GetSummonerSpells()
 	{
-		$json = $this->GetJson('https://global.api.pvp.net/api/lol/static-data/na/v1.2/summoner-spell?spellData=image&api_key=');
+		$json = $this->GetJson('https://na1.api.riotgames.com/lol/static-data/v3/summoner-spells?spellData=image&api_key=');
 		
 		return $json;
 	}
