@@ -12,7 +12,6 @@ class RiotApi
 	{
 		$master_url = $url . $this->api_key;
 		$json = file_get_contents($master_url, false);
-		$json = mb_convert_encoding($json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
 		
 		return $json;
 	}
