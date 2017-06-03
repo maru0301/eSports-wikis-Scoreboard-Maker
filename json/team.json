@@ -6,27 +6,34 @@
 			"player" : [
 					"SatoRy",
 					"Savage",
-					"Shinmori",
+					"Broooock",
 					"Rokenia",
 					"ThintoN",
-					"Solid",
-					"Broooock",
-					"Estelim",
-					"WildSpeed",
-					"NaeMisa"
+					"WildSpeed"
+			]
+		},
+		"Burning Core" : {
+			"code" : "BC",
+			"tag" :  "BC",
+			"player" : [
+					"MayZ",
+					"Astarore",
+					"Hollis",
+					"Zerost",
+					"Legato",
+					"Akasi"
 			]
 		},
 		"DeatnatioN FM" : {
 			"code" : "DFM",
 			"tag" :  "DFM",
 			"player" : [
-					"Yutapon",
 					"Paz",
-					"Shrimp",
+					"Steal",
 					"Ceros",
-					"Zerost",
+					"Yutapon",
 					"viviD",
-					"nororin"
+					"Pink Bean"
 			]
 		},
 		"Rampage" : {
@@ -38,8 +45,7 @@
 					"Ramune",
 					"YutoriMoyashi",
 					"Dara",
-					"Meron",
-					"Lem0n"
+					"TETE"
 			]
 		},
 		"Rascal Jester" : {
@@ -48,27 +54,11 @@
 			"player" : [
 					"Atyamomo",
 					"WyverN",
-					"alleycat",
+					"Lavie",
 					"NoA",
 					"Yuki",
-					"Rkp",
+					"alleycat",
 					"iSeNN"
-			]
-		},
-		"SCARZ": {
-			"code" : "SCARZ",
-			"tag" :  "SZ",
-			"player" : [
-					"Arfoad",
-					"DayDream",
-					"Search",
-					"Day1",
-					"Kazu",
-					"Mei",
-					"Araragi",
-					"Air",
-					"Way",
-					"Terette"
 			]
 		},
 		"USG": {
